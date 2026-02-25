@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - THE BRAIN 2026</title>
+    <title>KJC AI - DIAMOND BRAIN 2026</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -61,10 +61,10 @@
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - THE BRAIN</h2>
+            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - DIAMOND BRAIN</h2>
             <input type="text" id="user" placeholder="Tên Đăng nhập">
             <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-main" onclick="login()">KÍCH HOẠT BỘ NÃO</button>
+            <button class="btn-main" onclick="login()">KÍCH HOẠT NĂNG LƯỢNG</button>
         </div>
     </div>
 
@@ -91,7 +91,7 @@
                 <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
                 <div><div style="font-size:9px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
             </div>
-            <button class="btn-main" onclick="processTheBrain()">VẬN HÀNH BỘ NÃO AI</button>
+            <button class="btn-main" onclick="diamondLogic()">PHÂN TÍCH KIM CƯƠNG</button>
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
                     <div class="laser-line"></div>
@@ -99,7 +99,7 @@
                 </div>
                 <div id="res-text" class="res-display">?</div>
             </div>
-            <div id="logs" class="log-txt">> Hệ thống đang chờ dữ liệu...</div>
+            <div id="logs" class="log-txt">> Chờ nạp dữ liệu bàn...</div>
         </div>
     </div>
 
@@ -113,16 +113,16 @@
     </div>
 
     <div id="pop-select-table" class="overlay" style="z-index: 999;">
-        <div class="popup"><b style="font-size:11px;">CHỌN BÀN PHÂN TÍCH</b><div class="table-grid" id="table-list"></div></div>
+        <div class="popup"><b style="font-size:11px;">HỆ THỐNG BÀN</b><div class="table-grid" id="table-list"></div></div>
     </div>
 
     <div id="pop-xu" class="overlay">
-        <div class="popup"><b>NẠP TÍN DỤNG</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-main" onclick="activeKey()">XÁC NHẬN</button></div>
+        <div class="popup"><b>MÃ TÍN DỤNG</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-main" onclick="activeKey()">XÁC NHẬN</button></div>
     </div>
 
 <script>
     let xu = 0; let curSide = ''; let pScore = 0; let bScore = 0;
-    let history = []; // Bộ nhớ của bộ não AI
+    let history = []; 
 
     const tList = document.getElementById('table-list');
     for(let i=1; i<=10; i++) { createTItem(`BÀN ${i}`); }
@@ -147,10 +147,10 @@
     function activeKey() { if(document.getElementById('key-input').value === "Admin") { xu = 9999; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); } }
 
     /* ==========================================
-       BỘ NÃO AI THỰC THỤ - LOGIC NHẬN DIỆN CẦU
+       BỘ NÃO AI KIM CƯƠNG - SIÊU PHÂN TÍCH
     ============================================= */
-    function processTheBrain() {
-        if(xu <= 0) return alert("Hết tín dụng!");
+    function diamondLogic() {
+        if(xu <= 0) return alert("Hết xu!");
         
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
@@ -158,43 +158,47 @@
         
         mon.classList.add('scanning');
         res.innerText = ".."; res.style.color = "#111";
-        logBox.innerText = "> Đang khớp lệnh bộ não...";
+        logBox.innerText = "> AI đang quét vi mạch dữ liệu...";
 
         setTimeout(() => {
             xu -= 10; document.getElementById('display-xu').innerText = xu;
             mon.classList.remove('scanning');
 
-            // Ghi nhận ván vừa nhập vào lịch sử
             let lastWin = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
             if (lastWin !== "T") history.push(lastWin);
-            if (history.length > 6) history.shift(); // Chỉ nhớ 6 ván gần nhất
+            if (history.length > 10) history.shift(); 
 
             let final = "";
             let diff = Math.abs(pScore - bScore);
+            
+            // --- THUẬT TOÁN KIM CƯƠNG ---
 
-            // LOGIC BỘ NÃO:
-            // 1. Nếu ván trước thắng trắng (8, 9 điểm) và cách biệt lớn -> Bắt bệt (đi tiếp)
-            if (diff >= 5 && (pScore >= 8 || bScore >= 8)) {
-                final = lastWin; 
-                logBox.innerText = "> Phát hiện xung lực mạnh: Bắt bệt!";
+            // 1. Quy luật "Vết dầu loang" (Cầu bệt): Nếu thắng cách biệt cực lớn 8-0, 9-0, 8-1
+            if (diff >= 7) {
+                final = lastWin;
+                logBox.innerText = "> Lực đánh áp đảo: Bám bệt " + (final == 'P' ? 'Con' : 'Cái');
             }
-            // 2. Nếu lịch sử đang đi lặp (P-B-P hoặc B-P-B) -> Bắt cầu 1-1
+            // 2. Quy luật "Hồi mã thương" (Cầu gãy): Nếu thắng sát nút 1-0, 2-1 hoặc hòa ảo
+            else if (diff <= 1 && diff !== 0) {
+                final = (lastWin === "P") ? "B" : "P";
+                logBox.innerText = "> Tín hiệu đảo chiều: Đánh gãy cầu!";
+            }
+            // 3. Quy luật "Đối xứng" (1-1): Kiểm tra chuỗi lịch sử
             else if (history.length >= 3 && history[history.length-1] !== history[history.length-2]) {
                 final = (history[history.length-1] === "P") ? "B" : "P";
-                logBox.innerText = "> Nhận diện cầu 1-1: Đánh nghịch!";
+                logBox.innerText = "> Nhận dạng cầu 1-1 đối xứng.";
             }
-            // 3. Nếu điểm thấp (0, 1, 2) -> Thường gãy cầu
-            else if (pScore <= 2 && bScore <= 2) {
-                final = (Math.random() > 0.5) ? "P" : "B";
-                logBox.innerText = "> Tín hiệu yếu: AI tự cân đối...";
+            // 4. Quy luật "Nhà cái ưu thế": Nếu điểm trung bình cao
+            else if ((pScore + bScore) > 12) {
+                final = "B";
+                logBox.innerText = "> Chỉ số Banker tích cực. Đặt Banker.";
             }
-            // 4. Mặc định: Thuật toán xác suất bám đuôi Banker (Vì Banker có tỉ lệ thắng cao hơn 1 xíu)
+            // 5. Mặc định: Phân tích dựa trên thuật toán bù trừ
             else {
-                final = (diff % 2 === 0) ? "B" : "P";
-                logBox.innerText = "> Đang bám theo luồng sảnh...";
+                final = (pScore + bScore + diff) % 2 === 0 ? "P" : "B";
+                logBox.innerText = "> Tính toán xác suất luồng bài...";
             }
 
-            // Hiển thị
             res.innerText = final;
             res.style.color = final == 'P' ? "#0055ff" : "#cc0000";
             res.style.textShadow = `0 0 20px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
@@ -203,9 +207,9 @@
             pScore = 0; bScore = 0;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
-        }, 1500);
+        }, 1800);
     }
 </script>
 </body>
-                         </html>
-                                                                                                                                                                                      
+    </html>
+    
