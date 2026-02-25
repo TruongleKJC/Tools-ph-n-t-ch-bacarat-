@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CongthucBCR AI</title>
+    <title>KJC AI - SERVER INJECTION V3</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -11,24 +11,23 @@
             --img-wm: url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg');
             --img-sa: url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg');
             --img-robot: url('https://i.postimg.cc/vHbKD3t5/pngtree-a-robot-with-round-head-png-image-16287334.png');
-            --bg-auth: radial-gradient(circle, #004d4d, #000);
+            --bg-auth: radial-gradient(circle, #001a1a, #000);
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; }
 
-        /* AUTH SCREEN */
+        /* MÀN HÌNH ĐĂNG NHẬP */
         .auth-screen { position: fixed; inset: 0; background: var(--bg-auth); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
         .auth-box { width: 300px; padding: 25px; border: 1px solid #00ffcc; border-radius: 15px; background: rgba(0,0,0,0.9); text-align: center; }
         .auth-box input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #0f0; outline: none; border-radius: 5px; }
         .btn-auth { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        /* MAIN APP */
+        /* APP CHÍNH */
         #main-app { display: none; }
-        .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-size: 13px; font-weight: bold; }
+        .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #004d4d; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-weight: bold; border-bottom: 2px solid #00ffcc; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; height: 100vh; overflow-y: auto; }
-        .card { border: 1px solid #00ffcc; border-radius: 8px; height: 180px; background-color: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border-bottom: 4px solid #00ffcc; transition: 0.3s; }
-        .card:active { transform: scale(0.95); opacity: 0.7; }
+        .card { border-radius: 12px; height: 160px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 15px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border: 1px solid #00ffcc; box-shadow: inset 0 0 10px #000; }
         .dg { background-image: linear-gradient(to top, #000, transparent), var(--img-dg); }
         .sexy { background-image: linear-gradient(to top, #000, transparent), var(--img-sexy); }
         .wm { background-image: linear-gradient(to top, #000, transparent), var(--img-wm); }
@@ -36,175 +35,186 @@
 
         /* POPUP */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 350px; background: #001212; border: 1px solid #00ffcc; border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 30px #00ffcc33; }
-        .close { position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer; }
+        .popup { width: 90%; max-width: 380px; background: #000; border: 2px solid #00ffcc; border-radius: 25px; padding: 20px; text-align: center; position: relative; }
+        .close { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #00ffcc; }
 
-        /* ROBOT SECTION (BỎ NỀN XUNG QUANH) */
+        /* KHU VỰC NHẬP ĐIỂM 1-9 */
+        .input-score-box { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
+        .score-col { flex: 1; }
+        .score-val { background: #111; border: 1px solid #333; padding: 10px; font-size: 1.5rem; border-radius: 8px; color: #fff; margin-bottom: 5px; }
+        .btn-p-small { background: #0055ff; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: bold; margin-bottom: 5px; }
+        .btn-b-small { background: #cc0000; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: bold; margin-bottom: 5px; }
+
+        /* MONITOR & ROBOT */
         .analysis-monitor {
-            background: transparent; margin-top: 15px;
-            display: flex; align-items: center; gap: 20px; position: relative;
+            margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 30px;
+            position: relative; height: 120px;
         }
-
-        .robot-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-        
+        .robot-box { position: relative; width: 100px; height: 100px; }
         .ai-robot-img { 
-            width: 100%; height: 100%; 
-            background-image: var(--img-robot); background-size: contain; background-repeat: no-repeat; background-position: center;
-            animation: floating 2.5s ease-in-out infinite;
-            z-index: 5;
+            width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat;
+            animation: floating 2s ease-in-out infinite;
         }
 
-        /* HIỆU ỨNG CHIẾU SÁNG MỘT HƯỚNG (VỀ PHÍA KẾ QUẢ) */
-        .light-beam {
-            position: absolute; left: 80%; top: 50%; width: 0; height: 40px;
-            background: linear-gradient(90deg, #00ff00aa, transparent);
-            transform: translateY(-50%);
-            z-index: 1; transition: 0.2s; border-radius: 50%;
+        /* HIỆU ỨNG CHIẾU SÁNG MỘT HƯỚNG */
+        .beam-light {
+            position: absolute; top: 50%; left: 80%; width: 0; height: 40px;
+            background: linear-gradient(90deg, #00ff00, transparent);
+            filter: blur(10px); transform: translateY(-50%); opacity: 0; transition: 0.2s;
         }
-        .scanning-active .light-beam {
-            width: 150px;
-            animation: beam-shoot 0.5s ease-in-out infinite alternate;
-            filter: blur(8px);
-        }
+        .scanning .beam-light { width: 150px; opacity: 1; animation: beam-pulse 0.5s infinite; }
 
-        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        @keyframes beam-shoot { from { opacity: 0.3; width: 100px; } to { opacity: 1; width: 180px; } }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes beam-pulse { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
 
-        .res-text { font-size: 4rem; font-weight: 900; color: #111; z-index: 10; transition: 0.3s; }
-        .btn-p { background: #0055ff; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
-        .btn-b { background: #cc0000; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
-        .btn-calc { background: #fff; color: #000; width: 100%; padding: 15px; border-radius: 8px; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; box-shadow: 0 0 15px #fff; }
-        
-        /* HIỆU ỨNG XÂM NHẬP SẢNH */
-        #hack-log { font-size: 10px; color: #00ff00; text-align: left; height: 40px; overflow: hidden; margin-top: 5px; font-family: monospace; border-top: 1px solid #1a1a1a; padding-top: 5px; }
+        .res-text { font-size: 4rem; font-weight: 900; color: #111; text-shadow: 0 0 5px rgba(255,255,255,0.05); z-index: 5; }
+        .btn-calc { background: #00ffcc; color: #000; width: 100%; padding: 15px; border-radius: 10px; font-weight: 900; border: none; margin-top: 15px; cursor: pointer; letter-spacing: 2px; }
 
-        .display-val { background: #000; border: 1px solid #00ffcc44; padding: 10px; margin-bottom: 10px; font-size: 1.2rem; color: #0f0; min-height: 45px; border-radius: 5px; }
+        /* NHẬP SỐ 1-9 */
+        .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+        .num-btn { background: #1a1a1a; border: 1px solid #00ffcc; color: #fff; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .num-btn:active { background: #00ffcc; color: #000; }
+
+        .log-box { font-size: 10px; color: #00ff00; text-align: left; height: 40px; overflow: hidden; margin-top: 10px; font-family: monospace; border-top: 1px solid #111; padding-top: 5px; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:#00ffcc">CongthucBCR AI</h2>
-            <input type="text" id="user" placeholder="Tên tài khoản">
-            <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-auth" onclick="login()">ĐĂNG NHẬP</button>
+            <h2 style="color:#00ffcc">KJC SYSTEM V3</h2>
+            <input type="text" id="user" placeholder="ID HỆ THỐNG">
+            <input type="password" id="pass" placeholder="MÃ TRUY CẬP">
+            <button class="btn-auth" onclick="login()">KẾT NỐI SERVER</button>
         </div>
     </div>
 
     <div id="main-app">
-        <div class="top-bar" onclick="openPopup('pop-xu')">
-            <span>XU: <b id="display-xu" style="color:yellow">0</b></span>
-            <span>SYSTEM CONNECTED ☰</span>
+        <div class="top-bar">
+            <span>CHỦ: <b style="color:yellow">ADMIN</b></span>
+            <span onclick="openPopup('pop-xu')">XU: <b id="display-xu" style="color:red">0</b> (NẠP)</span>
         </div>
         <div class="lobby">
-            <div class="card dg" onclick="startHack('DREAM GAMING')">DREAM GAMING</div>
-            <div class="card sexy" onclick="startHack('AE SEXY')">AE SEXY</div>
-            <div class="card wm" onclick="startHack('WM CASINO')">WM CASINO</div>
-            <div class="card sa" onclick="startHack('SA GAMING')">SA GAMING</div>
+            <div class="card dg" onclick="startInjected('DREAM GAMING')">DG CASINO</div>
+            <div class="card sexy" onclick="startInjected('AE SEXY')">AE SEXY</div>
+            <div class="card wm" onclick="startInjected('WM CASINO')">WM CASINO</div>
+            <div class="card sa" onclick="startInjected('SA GAMING')">SA GAMING</div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-tool')">×</span>
-            <div id="lobby-title" style="color:#00ffcc; font-weight:bold; margin-bottom:10px;">CONNECTED TO SẢNH</div>
+            <div id="injected-status" style="font-size: 10px; color: #00ffcc; margin-bottom: 10px;">CONNECTED TO: DG_BÀN_C01</div>
             
-            <div class="display-val" id="data-input">CHƯA CÓ DỮ LIỆU...</div>
-            
-            <div style="display: flex; gap: 8px;">
-                <button class="btn-p" onclick="addValue('P')">CON (P)</button>
-                <button class="btn-b" onclick="addValue('B')">CÁI (B)</button>
+            <div class="input-score-box">
+                <div class="score-col">
+                    <button class="btn-p-small">PLAYER</button>
+                    <div class="score-val" id="score-p" onclick="openNum('P')">0</div>
+                </div>
+                <div class="score-col">
+                    <button class="btn-b-small">BANKER</button>
+                    <div class="score-val" id="score-b" onclick="openNum('B')">0</div>
+                </div>
             </div>
-            
-            <button class="btn-calc" onclick="tinhToanAI()">PHÂN TÍCH HỆ THỐNG AI</button>
-            <button style="background:none; border:none; color:#555; font-size:10px; margin-top:5px;" onclick="resetData()">Clear Data</button>
-            
+
+            <button class="btn-calc" onclick="tinhToanAI()">PHÂN TÍCH AI</button>
+
             <div class="analysis-monitor" id="monitor">
-                <div class="robot-container">
-                    <div class="light-beam"></div>
+                <div class="robot-box">
+                    <div class="beam-light"></div>
                     <div class="ai-robot-img"></div>
                 </div>
-                <div style="flex: 1; text-align: left;">
-                    <div style="font-size: 10px; color: #555;">STATUS: <b id="ai-status">WAITING DATA</b></div>
-                    <div id="res-val" class="res-text">--</div>
-                    <div style="font-size: 11px; color: #888;">AI PRECISION: <b id="stat-acc" style="color:#00ff00">--%</b></div>
-                </div>
+                <div id="res-val" class="res-text">?</div>
             </div>
-            <div id="hack-log"></div>
+            
+            <div id="ai-logs" class="log-box"></div>
+        </div>
+    </div>
+
+    <div id="pop-num" class="overlay">
+        <div class="popup" style="width: 280px;">
+            <b id="num-target">NHẬP ĐIỂM</b>
+            <div class="num-grid">
+                <button class="num-btn" onclick="setScore(1)">1</button><button class="num-btn" onclick="setScore(2)">2</button><button class="num-btn" onclick="setScore(3)">3</button>
+                <button class="num-btn" onclick="setScore(4)">4</button><button class="num-btn" onclick="setScore(5)">5</button><button class="num-btn" onclick="setScore(6)">6</button>
+                <button class="num-btn" onclick="setScore(7)">7</button><button class="num-btn" onclick="setScore(8)">8</button><button class="num-btn" onclick="setScore(9)">9</button>
+            </div>
         </div>
     </div>
 
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
-            <b>KÍCH HOẠT KEY</b>
-            <input type="text" id="ma-key" placeholder="Nhập mã...">
-            <button class="btn-calc" style="background:#00ffcc" onclick="napMa()">XÁC NHẬN</button>
+            <b>NẠP KEY KÍCH HOẠT</b>
+            <input type="text" id="ma-key" style="width:100%; padding:10px; margin:10px 0;">
+            <button class="btn-calc" onclick="napKey()">XÁC NHẬN</button>
         </div>
     </div>
 
 <script>
-    let xu = 0; let history = [];
-    function login() { if(!document.getElementById('user').value) return alert("Nhập TK!"); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
+    let xu = 0; let targetSide = '';
+    let scoreP = 0; let scoreB = 0;
+
+    function login() { document.getElementById('auth-screen').style.display='none'; document.getElementById('main-app').style.display='block'; }
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Xâm nhập sảnh thật
-    function startHack(sanh) {
+    function startInjected(name) {
+        const ban = ["C01","C02","C05","C10","BÀN 1","BÀN 6","BÀN 8"];
+        const randomBan = ban[Math.floor(Math.random()*ban.length)];
+        document.getElementById('injected-status').innerText = `INJECTED: ${name} -> ${randomBan}`;
         openPopup('pop-tool');
-        document.getElementById('lobby-title').innerText = "INJECTING: " + sanh;
-        const log = document.getElementById('hack-log');
-        log.innerHTML = "Connecting to " + sanh + " server...<br>";
-        setTimeout(() => log.innerHTML += "Bypassing Firewall... OK<br>", 500);
-        setTimeout(() => log.innerHTML += "Decrypting Table Data... DONE", 1000);
+        addLog("Bypassing Firewall...");
+        setTimeout(()=> addLog("Accessing Database..."), 500);
+        setTimeout(()=> addLog("Server Injected Successfully!"), 1000);
     }
 
-    // Nhập dữ liệu thật mới cho soi
-    function addValue(v) {
-        if(history.length >= 10) history.shift();
-        history.push(v);
-        document.getElementById('data-input').innerText = "DATA: " + history.join(" - ");
-        document.getElementById('ai-status').innerText = "READY TO SCAN";
+    function openNum(side) { targetSide = side; document.getElementById('num-target').innerText = "ĐIỂM " + (side=='P'?'CON':'CÁI'); openPopup('pop-num'); }
+    function setScore(n) {
+        if(targetSide == 'P') { scoreP = n; document.getElementById('score-p').innerText = n; }
+        else { scoreB = n; document.getElementById('score-b').innerText = n; }
+        closePopup('pop-num');
     }
 
-    function resetData() { history = []; document.getElementById('data-input').innerText = "CHƯA CÓ DỮ LIỆU..."; document.getElementById('res-val').innerText = "--"; document.getElementById('res-val').style.color = "#111"; }
+    function addLog(msg) {
+        const log = document.getElementById('ai-logs');
+        log.innerHTML = `> ${msg}<br>` + log.innerHTML;
+    }
 
-    function napMa() { if(document.getElementById('ma-key').value === "KJC2026") { xu += 1000; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); alert("Thành công!"); } else alert("Mã sai!"); }
+    function napKey() { if(document.getElementById('ma-key').value==="KJC2026"){ xu=999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("Đã kích hoạt!"); } }
 
-    // Nâng cấp hệ thống AI chính xác
     function tinhToanAI() {
-        if(xu < 10) return alert("Hết xu!");
-        if(history.length < 3) return alert("Cần nhập tối thiểu 3 tay để Robot phân tích chính xác!");
+        if(xu <= 0) return alert("Hết xu! Vui lòng nạp Key.");
+        if(scoreP == 0 || scoreB == 0) return alert("Vui lòng nhập điểm cả 2 bên (1-9)!");
 
-        const st = document.getElementById('ai-status'); 
-        const vl = document.getElementById('res-val'); 
-        const sa = document.getElementById('stat-acc');
         const mon = document.getElementById('monitor');
-
-        mon.classList.add('scanning-active');
-        st.innerText = "PENETRATING..."; 
-        vl.innerText = ".."; 
+        const res = document.getElementById('res-val');
+        
+        mon.classList.add('scanning');
+        res.innerText = "..";
+        addLog("Analyzing Card Patterns...");
 
         setTimeout(() => {
-            xu -= 10; 
-            document.getElementById('display-xu').innerText = xu; 
-            mon.classList.remove('scanning-active'); 
-            st.innerText = "SYSTEM OPTIMIZED";
+            xu -= 1; document.getElementById('display-xu').innerText = xu;
+            mon.classList.remove('scanning');
             
-            // Thuật toán giả lập dựa trên chuỗi nhập vào cho thật
-            let last = history[history.length - 1];
-            let p = Math.random() > 0.45; // Tỉ lệ bẻ cầu nhẹ cho giống thật
+            // Logic nâng cấp: Nếu tổng điểm lẻ thì về B, chẵn thì về P (Ví dụ thôi anh nhé)
+            let result = (scoreP + scoreB) % 2 == 0 ? "P" : "B";
+            res.innerText = result;
+            res.style.color = result == 'P' ? "#0055ff" : "#cc0000";
+            res.style.textShadow = `0 0 20px ${result=='P'?'#0055ff':'#cc0000'}`;
             
-            vl.innerText = p ? "P" : "B"; 
-            vl.style.color = p ? "#0055ff" : "#cc0000"; 
-            vl.style.textShadow = p ? "0 0 20px #0055ff" : "0 0 20px #cc0000";
-            
-            sa.innerText = (96 + Math.floor(Math.random()*3)) + ".8%"; // Tỉ lệ cao uy tín
-            
+            addLog(`Result Predicted: ${result}`);
             if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        }, 2000);
+            
+            // Reset điểm sau khi soi xong để bắt khách nhập lại
+            scoreP = 0; scoreB = 0;
+            document.getElementById('score-p').innerText = "0";
+            document.getElementById('score-b').innerText = "0";
+        }, 1500);
     }
 </script>
 </body>
-</html>
+        </html>
+            
