@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI CUSTOM - ROBOT FLY</title>
+    <title>KJC AI - ROBOT EVOLUTION</title>
     <style>
-        /* --- KHU VỰC TỰ THAY LINK ẢNH --- */
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
             --img-sexy: url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg');
             --img-wm: url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg');
             --img-sa: url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg');
-            
-            /* Link ảnh Robot AI */
             --img-robot: url('https://i.postimg.cc/vHbKD3t5/pngtree-a-robot-with-round-head-png-image-16287334.png');
             --bg-auth: radial-gradient(circle, #004d4d, #000);
         }
@@ -21,64 +18,69 @@
         body { margin: 0; background: #000; color: #fff; overflow: hidden; }
 
         /* AUTH SCREEN */
-        .auth-screen {
-            position: fixed; inset: 0; background: var(--bg-auth);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
-        }
+        .auth-screen { position: fixed; inset: 0; background: var(--bg-auth); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
         .auth-box { width: 300px; padding: 25px; border: 1px solid #00ffcc; border-radius: 15px; background: rgba(0,0,0,0.9); text-align: center; }
         .auth-box input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #0f0; outline: none; border-radius: 5px; }
         .btn-auth { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        /* LOBBY */
+        /* MAIN APP */
         #main-app { display: none; }
         .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-size: 13px; font-weight: bold; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; height: 100vh; overflow-y: auto; }
-        
         .card { border: 1px solid #00ffcc; border-radius: 8px; height: 180px; background-color: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border-bottom: 4px solid #00ffcc; }
         .dg { background-image: linear-gradient(to top, #000, transparent), var(--img-dg); }
         .sexy { background-image: linear-gradient(to top, #000, transparent), var(--img-sexy); }
         .wm { background-image: linear-gradient(to top, #000, transparent), var(--img-wm); }
         .sa { background-image: linear-gradient(to top, #000, transparent), var(--img-sa); }
 
-        /* POPUP & MONITOR */
+        /* POPUP */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
         .popup { width: 350px; background: #001a1a; border: 1px solid #00ffcc; border-radius: 20px; padding: 15px; text-align: center; position: relative; }
         .close { position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer; }
 
+        /* MONITOR & ROBOT */
         .analysis-monitor {
-            background: #000; border: 1px solid #1a1a1a; border-radius: 10px; padding: 10px; margin-top: 10px;
-            position: relative; overflow: hidden; display: flex; align-items: center; gap: 10px;
-            transition: 0.3s;
+            background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; margin-top: 15px;
+            display: flex; align-items: center; gap: 15px; position: relative;
         }
 
-        /* ROBOT LƠ LỬNG */
-        .ai-robot-img { 
-            width: 80px; height: 80px; border-radius: 5px; border: 1px solid #00ffcc; 
-            object-fit: cover; background-image: var(--img-robot); background-size: cover;
-            animation: floating 2s ease-in-out infinite;
-        }
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
+        .robot-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
         
-        /* CHIẾU SÁNG XANH LÁ KHI PHÂN TÍCH */
-        .scanning-active {
-            box-shadow: inset 0 0 20px #00ff00, 0 0 15px #00ff00;
-            border: 1px solid #00ff00;
+        /* ROBOT KHÔNG KHUNG + LƠ LỬNG */
+        .ai-robot-img { 
+            width: 85px; height: 85px; 
+            background-image: var(--img-robot); background-size: contain; background-repeat: no-repeat; background-position: center;
+            animation: floating 2.5s ease-in-out infinite;
+            z-index: 2;
         }
 
-        .radar-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #00ff00; animation: scan 1s linear infinite; display: none; z-index: 10; }
-        @keyframes scan { from { top: 0; } to { top: 100%; } }
+        /* HIỆU ỨNG CHIẾU SÁNG TỎA RA TỪ ROBOT */
+        .light-glow {
+            position: absolute; width: 20px; height: 20px; background: #00ff00; border-radius: 50%;
+            filter: blur(20px); opacity: 0; z-index: 1; transition: 0.3s;
+        }
+        .scanning-active .light-glow {
+            animation: glow-pulse 1s ease-out infinite;
+        }
 
-        .res-text { font-size: 2.5rem; font-weight: 900; color: #222; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow-pulse {
+            0% { transform: scale(1); opacity: 0.8; filter: blur(10px); }
+            100% { transform: scale(5); opacity: 0; filter: blur(30px); }
+        }
+
+        .res-text { font-size: 3rem; font-weight: 900; color: #333; transition: 0.3s; }
         .btn-orange { background: #ff8c00; color: #fff; padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
         .btn-p { background: #0055ff; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
         .btn-b { background: #cc0000; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
         .btn-calc { background: #fff; color: #000; width: 100%; padding: 12px; border-radius: 8px; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; }
         .btn-del { background: #444; color: #fff; width: 100%; padding: 8px; border-radius: 5px; border: none; font-size: 10px; margin-top: 5px; cursor: pointer; }
 
+        /* NUMPAD & BAN */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
         .num-btn { background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 5px; cursor: pointer; }
         .ban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
@@ -102,7 +104,6 @@
             <span>XU: <b id="display-xu" style="color:yellow">0</b></span>
             <span>NẬP KEY ☰</span>
         </div>
-
         <div class="lobby">
             <div class="card dg" onclick="openPopup('pop-tool')">DREAM GAMING</div>
             <div class="card sexy" onclick="openPopup('pop-tool')">AE SEXY</div>
@@ -124,13 +125,16 @@
             </div>
             <button class="btn-calc" onclick="tinhToan()">PHÂN TÍCH AI</button>
             <button class="btn-del" onclick="clearHistory()">XÓA LỊCH SỬ DỮ LIỆU</button>
+            
             <div class="analysis-monitor" id="monitor">
-                <div class="radar-line" id="radar"></div>
-                <div class="ai-robot-img"></div>
+                <div class="robot-container">
+                    <div class="light-glow"></div>
+                    <div class="ai-robot-img"></div>
+                </div>
                 <div style="flex: 1; text-align: left;">
-                    <div style="font-size: 9px; color: #666;">AI STATUS: <b id="ai-status">WAITING</b></div>
+                    <div style="font-size: 10px; color: #555;">SYSTEM: <b id="ai-status">STAYBY</b></div>
                     <div id="res-val" class="res-text">READY</div>
-                    <div style="font-size: 10px; color: #888;">Tỉ lệ: <b id="stat-acc" style="color:#00ffcc">--%</b></div>
+                    <div style="font-size: 11px; color: #888;">AI ACCURACY: <b id="stat-acc" style="color:#00ffcc">--%</b></div>
                 </div>
             </div>
         </div>
@@ -150,7 +154,6 @@
             </div>
         </div>
     </div>
-
     <div id="pop-ban" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-ban')">×</span>
@@ -158,19 +161,18 @@
             <div class="ban-grid" id="grid-1-10"></div><div style="height:10px"></div><div class="ban-grid" id="grid-c"></div>
         </div>
     </div>
-
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
             <b>KÍCH HOẠT KEY</b>
-            <input type="text" id="ma-key" placeholder="Nhập Key nạp xu...">
+            <input type="text" id="ma-key" placeholder="Nhập Key...">
             <button class="btn-calc" onclick="napMa()">XÁC NHẬN</button>
         </div>
     </div>
 
 <script>
     let xu = 0; let currentInput = "";
-    function login() { if(!document.getElementById('user').value) return alert("Nhập tài khoản!"); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
+    function login() { if(!document.getElementById('user').value) return alert("Nhập TK!"); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
     function openPopup(id, title) { document.getElementById(id).style.display = 'flex'; if(title) document.getElementById('num-title').innerText = "NHẬP " + title; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
     function press(v) { const d = document.getElementById('num-display'); if(v === 'C') currentInput = ""; else if(v === 'OK') closePopup('pop-num'), currentInput = ""; else if(currentInput.length < 12) currentInput += v; d.innerText = currentInput; }
@@ -181,39 +183,34 @@
     for(let i=1; i<=15; i++){ let c = "C"+(i<10?"0"+i:i); let d = document.createElement('div'); d.className='ban-item'; d.innerText=c; d.onclick=()=>{document.getElementById('cur-ban').innerText=c; closePopup('pop-ban')}; gc.appendChild(d); }
 
     function napMa() { if(document.getElementById('ma-key').value === "KJC2026") { xu += 1000; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); alert("Thành công!"); } else alert("Mã sai!"); }
-    function clearHistory() { alert("Đã xóa lịch sử!"); document.getElementById('res-val').innerText = "READY"; document.getElementById('res-val').style.color = "#222"; document.getElementById('stat-acc').innerText = "--%"; }
+    function clearHistory() { alert("Đã xóa!"); document.getElementById('res-val').innerText = "READY"; document.getElementById('res-val').style.color = "#333"; document.getElementById('stat-acc').innerText = "--%"; }
 
     function tinhToan() {
         if(xu < 10) return alert("Nạp xu!");
-        const r = document.getElementById('radar'); 
         const st = document.getElementById('ai-status'); 
         const vl = document.getElementById('res-val'); 
         const sa = document.getElementById('stat-acc');
         const mon = document.getElementById('monitor');
 
-        // Bật hiệu ứng quét và chiếu sáng xanh lá
-        r.style.display = 'block'; 
         mon.classList.add('scanning-active');
-        st.innerText = "ANALYZING..."; 
-        vl.innerText = "??"; 
-        vl.style.color = "#444";
+        st.innerText = "THINKING..."; 
+        vl.innerText = ".."; 
 
         setTimeout(() => {
             xu -= 10; 
             document.getElementById('display-xu').innerText = xu; 
-            r.style.display = 'none'; 
-            mon.classList.remove('scanning-active'); // Tắt chiếu sáng xanh
-            st.innerText = "COMPLETED";
+            mon.classList.remove('scanning-active'); 
+            st.innerText = "SUCCESS";
             
             let p = Math.random() > 0.5; 
-            vl.innerText = p ? "P" : "B"; // Thay đổi kết quả thành P hoặc B
+            vl.innerText = p ? "P" : "B"; 
             vl.style.color = p ? "#0055ff" : "#cc0000"; 
             sa.innerText = (93 + Math.floor(Math.random()*6)) + "%";
             
             if(navigator.vibrate) navigator.vibrate(200);
-        }, 1500);
+        }, 1800);
     }
 </script>
 </body>
-                                                                          </html>
-    
+                    </html>
+                    
