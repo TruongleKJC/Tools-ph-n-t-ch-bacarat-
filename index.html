@@ -120,16 +120,16 @@
         <div class="auth-box">
             <h2 style="color:var(--accent); margin-bottom: 5px;">Cong nghe AI</h2>
             <p style="font-size: 9px; color: #aaa; margin-bottom: 20px;">Nhập Tên TK</p>
-            <input type="text" id="user" placeholder="USER ID">
-            <input type="password" id="pass" placeholder="PASSWORD">
+            <input type="text" id="user" placeholder="Tên Đăng nhập vào Tool">
+            <input type="password" id="pass" placeholder=" mật khẩu Vào Tool">
             <button class="btn-auth" onclick="login()">Nhập Mật khẩu</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>NETWORK: <b style="color:var(--accent)">SECURED</b></span>
-            <span onclick="openPopup('pop-xu')">CREDITS: <b id="display-xu" style="color:yellow">0</b></span>
+            <span>Tk: <b style="color:var(--accent)">Admin</b></span>
+            <span onclick="openPopup('pop-xu')">NapXU: <b id="display-xu" style="color:yellow">0</b></span>
         </div>
         <div class="lobby">
             <div class="card dg" onclick="startInjected('DREAM GAMING')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
@@ -155,7 +155,7 @@
                 </div>
             </div>
 
-            <button class="btn-calc" onclick="tinhToanAI()">RUN AI INJECTION</button>
+            <button class="btn-calc" onclick="tinhToanAI()">Cong nghe AI 2026</button>
 
             <div class="analysis-monitor" id="monitor">
                 <div class="robot-box">
@@ -207,7 +207,7 @@
         closePopup('pop-num');
     }
     function addLog(msg) { const log = document.getElementById('ai-logs'); log.innerHTML = `> ${msg}<br>` + log.innerHTML; }
-    function napKey() { if(document.getElementById('ma-key').value==="Adimin"){ xu=9999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("System Activated!"); } }
+    function napKey() { if(document.getElementById('ma-key').value==="Admin"){ xu=9999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("System Activated!"); } }
 
     function tinhToanAI() {
         if(xu <= 0) return alert("Hết xu!");
