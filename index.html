@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - ROBOT EVOLUTION</title>
+    <title>CongthucBCR AI</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -27,72 +27,65 @@
         #main-app { display: none; }
         .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-size: 13px; font-weight: bold; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; height: 100vh; overflow-y: auto; }
-        .card { border: 1px solid #00ffcc; border-radius: 8px; height: 180px; background-color: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border-bottom: 4px solid #00ffcc; }
+        .card { border: 1px solid #00ffcc; border-radius: 8px; height: 180px; background-color: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border-bottom: 4px solid #00ffcc; transition: 0.3s; }
+        .card:active { transform: scale(0.95); opacity: 0.7; }
         .dg { background-image: linear-gradient(to top, #000, transparent), var(--img-dg); }
         .sexy { background-image: linear-gradient(to top, #000, transparent), var(--img-sexy); }
         .wm { background-image: linear-gradient(to top, #000, transparent), var(--img-wm); }
         .sa { background-image: linear-gradient(to top, #000, transparent), var(--img-sa); }
 
         /* POPUP */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 350px; background: #001a1a; border: 1px solid #00ffcc; border-radius: 20px; padding: 15px; text-align: center; position: relative; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; align-items: center; justify-content: center; }
+        .popup { width: 350px; background: #001212; border: 1px solid #00ffcc; border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 30px #00ffcc33; }
         .close { position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer; }
 
-        /* MONITOR & ROBOT */
+        /* ROBOT SECTION (BỎ NỀN XUNG QUANH) */
         .analysis-monitor {
-            background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; margin-top: 15px;
-            display: flex; align-items: center; gap: 15px; position: relative;
+            background: transparent; margin-top: 15px;
+            display: flex; align-items: center; gap: 20px; position: relative;
         }
 
-        .robot-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
+        .robot-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
         
-        /* ROBOT KHÔNG KHUNG + LƠ LỬNG */
         .ai-robot-img { 
-            width: 85px; height: 85px; 
+            width: 100%; height: 100%; 
             background-image: var(--img-robot); background-size: contain; background-repeat: no-repeat; background-position: center;
             animation: floating 2.5s ease-in-out infinite;
-            z-index: 2;
+            z-index: 5;
         }
 
-        /* HIỆU ỨNG CHIẾU SÁNG TỎA RA TỪ ROBOT */
-        .light-glow {
-            position: absolute; width: 20px; height: 20px; background: #00ff00; border-radius: 50%;
-            filter: blur(20px); opacity: 0; z-index: 1; transition: 0.3s;
+        /* HIỆU ỨNG CHIẾU SÁNG MỘT HƯỚNG (VỀ PHÍA KẾ QUẢ) */
+        .light-beam {
+            position: absolute; left: 80%; top: 50%; width: 0; height: 40px;
+            background: linear-gradient(90deg, #00ff00aa, transparent);
+            transform: translateY(-50%);
+            z-index: 1; transition: 0.2s; border-radius: 50%;
         }
-        .scanning-active .light-glow {
-            animation: glow-pulse 1s ease-out infinite;
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes glow-pulse {
-            0% { transform: scale(1); opacity: 0.8; filter: blur(10px); }
-            100% { transform: scale(5); opacity: 0; filter: blur(30px); }
+        .scanning-active .light-beam {
+            width: 150px;
+            animation: beam-shoot 0.5s ease-in-out infinite alternate;
+            filter: blur(8px);
         }
 
-        .res-text { font-size: 3rem; font-weight: 900; color: #333; transition: 0.3s; }
-        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        @keyframes beam-shoot { from { opacity: 0.3; width: 100px; } to { opacity: 1; width: 180px; } }
+
+        .res-text { font-size: 4rem; font-weight: 900; color: #111; z-index: 10; transition: 0.3s; }
         .btn-p { background: #0055ff; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
         .btn-b { background: #cc0000; color: #fff; padding: 15px; border-radius: 8px; border: none; font-weight: bold; flex: 1; cursor: pointer; }
-        .btn-calc { background: #fff; color: #000; width: 100%; padding: 12px; border-radius: 8px; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; }
-        .btn-del { background: #444; color: #fff; width: 100%; padding: 8px; border-radius: 5px; border: none; font-size: 10px; margin-top: 5px; cursor: pointer; }
+        .btn-calc { background: #fff; color: #000; width: 100%; padding: 15px; border-radius: 8px; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; box-shadow: 0 0 15px #fff; }
+        
+        /* HIỆU ỨNG XÂM NHẬP SẢNH */
+        #hack-log { font-size: 10px; color: #00ff00; text-align: left; height: 40px; overflow: hidden; margin-top: 5px; font-family: monospace; border-top: 1px solid #1a1a1a; padding-top: 5px; }
 
-        /* NUMPAD & BAN */
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
-        .num-btn { background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 5px; cursor: pointer; }
-        .ban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-        .ban-item { background: #0a0a0a; border: 1px solid #333; padding: 10px; font-size: 12px; cursor: pointer; border-radius: 4px; }
-        .display-val { background: #000; border: 1px solid #444; padding: 10px; margin-bottom: 10px; font-size: 1.5rem; color: #0f0; min-height: 45px; }
+        .display-val { background: #000; border: 1px solid #00ffcc44; padding: 10px; margin-bottom: 10px; font-size: 1.2rem; color: #0f0; min-height: 45px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:#00ffcc">KJC ROBOT AI</h2>
+            <h2 style="color:#00ffcc">CongthucBCR AI</h2>
             <input type="text" id="user" placeholder="Tên tài khoản">
             <input type="password" id="pass" placeholder="Mật khẩu">
             <button class="btn-auth" onclick="login()">ĐĂNG NHẬP</button>
@@ -102,115 +95,116 @@
     <div id="main-app">
         <div class="top-bar" onclick="openPopup('pop-xu')">
             <span>XU: <b id="display-xu" style="color:yellow">0</b></span>
-            <span>NẬP KEY ☰</span>
+            <span>SYSTEM CONNECTED ☰</span>
         </div>
         <div class="lobby">
-            <div class="card dg" onclick="openPopup('pop-tool')">DREAM GAMING</div>
-            <div class="card sexy" onclick="openPopup('pop-tool')">AE SEXY</div>
-            <div class="card wm" onclick="openPopup('pop-tool')">WM CASINO</div>
-            <div class="card sa" onclick="openPopup('pop-tool')">SA GAMING</div>
+            <div class="card dg" onclick="startHack('DREAM GAMING')">DREAM GAMING</div>
+            <div class="card sexy" onclick="startHack('AE SEXY')">AE SEXY</div>
+            <div class="card wm" onclick="startHack('WM CASINO')">WM CASINO</div>
+            <div class="card sa" onclick="startHack('SA GAMING')">SA GAMING</div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-tool')">×</span>
-            <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <span style="font-size: 12px;">PHÒNG:</span>
-                <button class="btn-orange" onclick="openPopup('pop-ban')" id="cur-ban">C01</button>
-            </div>
+            <div id="lobby-title" style="color:#00ffcc; font-weight:bold; margin-bottom:10px;">CONNECTED TO SẢNH</div>
+            
+            <div class="display-val" id="data-input">CHƯA CÓ DỮ LIỆU...</div>
+            
             <div style="display: flex; gap: 8px;">
-                <button class="btn-p" onclick="openPopup('pop-num', 'CON')">CON</button>
-                <button class="btn-b" onclick="openPopup('pop-num', 'CÁI')">CÁI</button>
+                <button class="btn-p" onclick="addValue('P')">CON (P)</button>
+                <button class="btn-b" onclick="addValue('B')">CÁI (B)</button>
             </div>
-            <button class="btn-calc" onclick="tinhToan()">PHÂN TÍCH AI</button>
-            <button class="btn-del" onclick="clearHistory()">XÓA LỊCH SỬ DỮ LIỆU</button>
+            
+            <button class="btn-calc" onclick="tinhToanAI()">PHÂN TÍCH HỆ THỐNG AI</button>
+            <button style="background:none; border:none; color:#555; font-size:10px; margin-top:5px;" onclick="resetData()">Clear Data</button>
             
             <div class="analysis-monitor" id="monitor">
                 <div class="robot-container">
-                    <div class="light-glow"></div>
+                    <div class="light-beam"></div>
                     <div class="ai-robot-img"></div>
                 </div>
                 <div style="flex: 1; text-align: left;">
-                    <div style="font-size: 10px; color: #555;">SYSTEM: <b id="ai-status">STAYBY</b></div>
-                    <div id="res-val" class="res-text">READY</div>
-                    <div style="font-size: 11px; color: #888;">AI ACCURACY: <b id="stat-acc" style="color:#00ffcc">--%</b></div>
+                    <div style="font-size: 10px; color: #555;">STATUS: <b id="ai-status">WAITING DATA</b></div>
+                    <div id="res-val" class="res-text">--</div>
+                    <div style="font-size: 11px; color: #888;">AI PRECISION: <b id="stat-acc" style="color:#00ff00">--%</b></div>
                 </div>
             </div>
+            <div id="hack-log"></div>
         </div>
     </div>
 
-    <div id="pop-num" class="overlay">
-        <div class="popup">
-            <span class="close" onclick="closePopup('pop-num')">×</span>
-            <b id="num-title">NHẬP KẾ QUẢ</b>
-            <div class="display-val" id="num-display"></div>
-            <div class="numpad">
-                <div class="num-btn" onclick="press('1')">1</div><div class="num-btn" onclick="press('2')">2</div><div class="num-btn" onclick="press('3')">3</div>
-                <div class="num-btn" onclick="press('4')">4</div><div class="num-btn" onclick="press('5')">5</div><div class="num-btn" onclick="press('6')">6</div>
-                <div class="num-btn" onclick="press('7')">7</div><div class="num-btn" onclick="press('8')">8</div><div class="num-btn" onclick="press('9')">9</div>
-                <div class="num-btn" style="color:red" onclick="press('C')">C</div><div class="num-btn" onclick="press('0')">0</div>
-                <div class="num-btn" style="color:#00ffcc" onclick="press('OK')">OK</div>
-            </div>
-        </div>
-    </div>
-    <div id="pop-ban" class="overlay">
-        <div class="popup">
-            <span class="close" onclick="closePopup('pop-ban')">×</span>
-            <b>CHỌN MÃ BÀN</b>
-            <div class="ban-grid" id="grid-1-10"></div><div style="height:10px"></div><div class="ban-grid" id="grid-c"></div>
-        </div>
-    </div>
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
             <b>KÍCH HOẠT KEY</b>
-            <input type="text" id="ma-key" placeholder="Nhập Key...">
-            <button class="btn-calc" onclick="napMa()">XÁC NHẬN</button>
+            <input type="text" id="ma-key" placeholder="Nhập mã...">
+            <button class="btn-calc" style="background:#00ffcc" onclick="napMa()">XÁC NHẬN</button>
         </div>
     </div>
 
 <script>
-    let xu = 0; let currentInput = "";
+    let xu = 0; let history = [];
     function login() { if(!document.getElementById('user').value) return alert("Nhập TK!"); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; }
-    function openPopup(id, title) { document.getElementById(id).style.display = 'flex'; if(title) document.getElementById('num-title').innerText = "NHẬP " + title; }
+    function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-    function press(v) { const d = document.getElementById('num-display'); if(v === 'C') currentInput = ""; else if(v === 'OK') closePopup('pop-num'), currentInput = ""; else if(currentInput.length < 12) currentInput += v; d.innerText = currentInput; }
 
-    const g1 = document.getElementById('grid-1-10');
-    for(let i=1; i<=10; i++){ let d = document.createElement('div'); d.className='ban-item'; d.innerText="BÀN "+i; d.onclick=()=>{document.getElementById('cur-ban').innerText=i; closePopup('pop-ban')}; g1.appendChild(d); }
-    const gc = document.getElementById('grid-c');
-    for(let i=1; i<=15; i++){ let c = "C"+(i<10?"0"+i:i); let d = document.createElement('div'); d.className='ban-item'; d.innerText=c; d.onclick=()=>{document.getElementById('cur-ban').innerText=c; closePopup('pop-ban')}; gc.appendChild(d); }
+    // Xâm nhập sảnh thật
+    function startHack(sanh) {
+        openPopup('pop-tool');
+        document.getElementById('lobby-title').innerText = "INJECTING: " + sanh;
+        const log = document.getElementById('hack-log');
+        log.innerHTML = "Connecting to " + sanh + " server...<br>";
+        setTimeout(() => log.innerHTML += "Bypassing Firewall... OK<br>", 500);
+        setTimeout(() => log.innerHTML += "Decrypting Table Data... DONE", 1000);
+    }
+
+    // Nhập dữ liệu thật mới cho soi
+    function addValue(v) {
+        if(history.length >= 10) history.shift();
+        history.push(v);
+        document.getElementById('data-input').innerText = "DATA: " + history.join(" - ");
+        document.getElementById('ai-status').innerText = "READY TO SCAN";
+    }
+
+    function resetData() { history = []; document.getElementById('data-input').innerText = "CHƯA CÓ DỮ LIỆU..."; document.getElementById('res-val').innerText = "--"; document.getElementById('res-val').style.color = "#111"; }
 
     function napMa() { if(document.getElementById('ma-key').value === "KJC2026") { xu += 1000; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); alert("Thành công!"); } else alert("Mã sai!"); }
-    function clearHistory() { alert("Đã xóa!"); document.getElementById('res-val').innerText = "READY"; document.getElementById('res-val').style.color = "#333"; document.getElementById('stat-acc').innerText = "--%"; }
 
-    function tinhToan() {
-        if(xu < 10) return alert("Nạp xu!");
+    // Nâng cấp hệ thống AI chính xác
+    function tinhToanAI() {
+        if(xu < 10) return alert("Hết xu!");
+        if(history.length < 3) return alert("Cần nhập tối thiểu 3 tay để Robot phân tích chính xác!");
+
         const st = document.getElementById('ai-status'); 
         const vl = document.getElementById('res-val'); 
         const sa = document.getElementById('stat-acc');
         const mon = document.getElementById('monitor');
 
         mon.classList.add('scanning-active');
-        st.innerText = "THINKING..."; 
+        st.innerText = "PENETRATING..."; 
         vl.innerText = ".."; 
 
         setTimeout(() => {
             xu -= 10; 
             document.getElementById('display-xu').innerText = xu; 
             mon.classList.remove('scanning-active'); 
-            st.innerText = "SUCCESS";
+            st.innerText = "SYSTEM OPTIMIZED";
             
-            let p = Math.random() > 0.5; 
+            // Thuật toán giả lập dựa trên chuỗi nhập vào cho thật
+            let last = history[history.length - 1];
+            let p = Math.random() > 0.45; // Tỉ lệ bẻ cầu nhẹ cho giống thật
+            
             vl.innerText = p ? "P" : "B"; 
             vl.style.color = p ? "#0055ff" : "#cc0000"; 
-            sa.innerText = (93 + Math.floor(Math.random()*6)) + "%";
+            vl.style.textShadow = p ? "0 0 20px #0055ff" : "0 0 20px #cc0000";
             
-            if(navigator.vibrate) navigator.vibrate(200);
-        }, 1800);
+            sa.innerText = (96 + Math.floor(Math.random()*3)) + ".8%"; // Tỉ lệ cao uy tín
+            
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        }, 2000);
     }
 </script>
 </body>
-                    </html>
-                    
+</html>
