@@ -118,11 +118,11 @@
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:var(--accent); margin-bottom: 5px;">KJC AI CORE</h2>
-            <p style="font-size: 9px; color: #aaa; margin-bottom: 20px;">SECURITY PROTOCOL ACTIVE</p>
+            <h2 style="color:var(--accent); margin-bottom: 5px;">Cong nghe AI</h2>
+            <p style="font-size: 9px; color: #aaa; margin-bottom: 20px;">Nhập Tên TK</p>
             <input type="text" id="user" placeholder="USER ID">
             <input type="password" id="pass" placeholder="PASSWORD">
-            <button class="btn-auth" onclick="login()">CONNECT SYSTEM</button>
+            <button class="btn-auth" onclick="login()">Nhập Mật khẩu</button>
         </div>
     </div>
 
@@ -173,7 +173,7 @@
         <div class="popup" style="width: 300px;">
             <b style="color:var(--accent)">INPUT SCORE (0-9)</b>
             <div class="num-grid">
-                <button class="num-btn" onclick="setScore(0)">0</button><button class="num-btn" onclick="setScore(1)">1</button<button class="num-btn" onclick="setScore(2)">2</button><button class="num-btn" onclick="setScore(3)">3</button>
+                <button class="num-btn" onclick="setScore(0)">0</button><button class="num-btn" onclick="setScore(1)">1</button><button class="num-btn" onclick="setScore(2)">2</button><button class="num-btn" onclick="setScore(3)">3</button>
                 <button class="num-btn" onclick="setScore(4)">4</button><button class="num-btn" onclick="setScore(5)">5</button><button class="num-btn" onclick="setScore(6)">6</button>
                 <button class="num-btn" onclick="setScore(7)">7</button><button class="num-btn" onclick="setScore(8)">8</button><button class="num-btn" onclick="setScore(9)">9</button>
             </div>
@@ -183,9 +183,9 @@
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
-            <b>ACTIVATE SYSTEM KEY</b>
+            <b> Vui lòng Nhập Mã tính dụng </b><b>Vui lòng liên hệ admin cấp </b>
             <input type="text" id="ma-key" style="width:100%; padding:12px; margin:15px 0; background:#000; border:1px solid #333; color:#fff;">
-            <button class="btn-auth" onclick="napKey()">CONFIRM KEY</button>
+            <button class="btn-auth" onclick="napKey()">Nạp Mã</button>
         </div>
     </div>
 
@@ -195,7 +195,7 @@
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
     function startInjected(name) {
-        const ban = ["C01","C05","BÀN 02","BÀN 10"];
+        const ban = ["BÀN C01","BÀN C05","BÀN 02","BÀN 10","BÀN C07","BÀN 01","BÀN 06","BÀN 08","BÀN 05","BÀN C08"];
         document.getElementById('injected-status').innerText = `SERVER: ${name} | PORT: ${ban[Math.floor(Math.random()*4)]}`;
         openPopup('pop-tool');
         addLog("Scanning Table Data...");
@@ -207,7 +207,7 @@
         closePopup('pop-num');
     }
     function addLog(msg) { const log = document.getElementById('ai-logs'); log.innerHTML = `> ${msg}<br>` + log.innerHTML; }
-    function napKey() { if(document.getElementById('ma-key').value==="KJC2026"){ xu=999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("System Activated!"); } }
+    function napKey() { if(document.getElementById('ma-key').value==="Adimin"){ xu=9999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("System Activated!"); } }
 
     function tinhToanAI() {
         if(xu <= 0) return alert("Hết xu!");
@@ -216,7 +216,7 @@
         mon.classList.add('scanning'); res.innerText = ".."; res.style.color = "#111";
         addLog("Injecting AI Script...");
         setTimeout(() => {
-            xu -= 1; document.getElementById('display-xu').innerText = xu;
+            xu -= 10; document.getElementById('display-xu').innerText = xu;
             mon.classList.remove('scanning');
             let result = (scoreP + scoreB + Math.floor(Math.random()*10)) % 2 == 0 ? "P" : "B";
             res.innerText = result;
