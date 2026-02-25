@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - DIAMOND BRAIN 2026</title>
+    <title>KJC AI - ALL-IN MASTER 2026</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -61,16 +61,16 @@
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - DIAMOND BRAIN</h2>
-            <input type="text" id="user" placeholder="Tên Đăng nhập">
+            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - ALL-IN MODE</h2>
+            <input type="text" id="user" placeholder="Tài khoản">
             <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-main" onclick="login()">KÍCH HOẠT NĂNG LƯỢNG</button>
+            <button class="btn-main" onclick="login()">KÍCH HOẠT HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>ADMIN: <b style="color:var(--accent)">READY</b></span>
+            <span>ADMIN: <b style="color:var(--accent)">ALL-IN MASTER</b></span>
             <span onclick="openPopup('pop-xu')">XU: <b id="display-xu" style="color:yellow">0</b></span>
         </div>
         <div class="lobby">
@@ -91,7 +91,7 @@
                 <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
                 <div><div style="font-size:9px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
             </div>
-            <button class="btn-main" onclick="diamondLogic()">PHÂN TÍCH KIM CƯƠNG</button>
+            <button class="btn-main" onclick="allInLogic()">PHÂN TÍCH CHỐT LỆNH</button>
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
                     <div class="laser-line"></div>
@@ -99,7 +99,7 @@
                 </div>
                 <div id="res-text" class="res-display">?</div>
             </div>
-            <div id="logs" class="log-txt">> Chờ nạp dữ liệu bàn...</div>
+            <div id="logs" class="log-txt">> Đang chờ dữ liệu tay chốt...</div>
         </div>
     </div>
 
@@ -111,13 +111,11 @@
             </div>
         </div>
     </div>
-
     <div id="pop-select-table" class="overlay" style="z-index: 999;">
-        <div class="popup"><b style="font-size:11px;">HỆ THỐNG BÀN</b><div class="table-grid" id="table-list"></div></div>
+        <div class="popup"><b style="font-size:11px;">BÀN PHÂN TÍCH C01-C15</b><div class="table-grid" id="table-list"></div></div>
     </div>
-
     <div id="pop-xu" class="overlay">
-        <div class="popup"><b>MÃ TÍN DỤNG</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-main" onclick="activeKey()">XÁC NHẬN</button></div>
+        <div class="popup"><b>NẠP XU</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-main" onclick="activeKey()">NẠP</button></div>
     </div>
 
 <script>
@@ -137,7 +135,7 @@
     function login() { document.getElementById('auth-screen').style.display='none'; document.getElementById('main-app').style.display='block'; }
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-    function openTool(name) { openPopup('pop-tool'); }
+    function openTool() { openPopup('pop-tool'); }
     function setSide(s) { curSide = s; openPopup('pop-num'); }
     function inputNum(n) {
         if(curSide == 'P') { pScore = n; document.getElementById('p-val').innerText = n; }
@@ -147,9 +145,9 @@
     function activeKey() { if(document.getElementById('key-input').value === "Admin") { xu = 9999; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); } }
 
     /* ==========================================
-       BỘ NÃO AI KIM CƯƠNG - SIÊU PHÂN TÍCH
+       BỘ NÃO AI "ALL-IN" - PHÂN TÍCH TAY CHỐT
     ============================================= */
-    function diamondLogic() {
+    function allInLogic() {
         if(xu <= 0) return alert("Hết xu!");
         
         const mon = document.getElementById('monitor');
@@ -158,7 +156,7 @@
         
         mon.classList.add('scanning');
         res.innerText = ".."; res.style.color = "#111";
-        logBox.innerText = "> AI đang quét vi mạch dữ liệu...";
+        logBox.innerText = "> Đang truy quét mã nguồn sảnh...";
 
         setTimeout(() => {
             xu -= 10; document.getElementById('display-xu').innerText = xu;
@@ -166,50 +164,55 @@
 
             let lastWin = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
             if (lastWin !== "T") history.push(lastWin);
-            if (history.length > 10) history.shift(); 
+            if (history.length > 12) history.shift(); 
 
             let final = "";
             let diff = Math.abs(pScore - bScore);
             
-            // --- THUẬT TOÁN KIM CƯƠNG ---
-
-            // 1. Quy luật "Vết dầu loang" (Cầu bệt): Nếu thắng cách biệt cực lớn 8-0, 9-0, 8-1
-            if (diff >= 7) {
-                final = lastWin;
-                logBox.innerText = "> Lực đánh áp đảo: Bám bệt " + (final == 'P' ? 'Con' : 'Cái');
+            // --- THUẬT TOÁN "1 TAY ĂN TẤT" ---
+            
+            // Lệnh 1: Bắt bệt cực đại (Cầu dài)
+            if (history.length >= 3 && history.every(v => v === history[0])) {
+                final = history[0];
+                logBox.innerText = "!! CẦU BỆT ĐANG MẠNH - CHỐT " + (final == 'P' ? 'CON' : 'CÁI');
             }
-            // 2. Quy luật "Hồi mã thương" (Cầu gãy): Nếu thắng sát nút 1-0, 2-1 hoặc hòa ảo
-            else if (diff <= 1 && diff !== 0) {
-                final = (lastWin === "P") ? "B" : "P";
-                logBox.innerText = "> Tín hiệu đảo chiều: Đánh gãy cầu!";
+            // Lệnh 2: Phản xạ điểm 9 (Thắng tuyệt đối)
+            else if (pScore === 9 || bScore === 9) {
+                // Nếu 9 thắng điểm thấp (9-0, 9-1): Thường sẽ hồi cầu (đánh ngược)
+                if (diff >= 8) {
+                    final = (lastWin === "P") ? "B" : "P";
+                    logBox.innerText = "!! TÍN HIỆU HỒI CẦU CỰC MẠNH !!";
+                } else {
+                    final = lastWin;
+                    logBox.innerText = "!! TIẾP DIỄN XUNG LỰC 9 ĐIỂM !!";
+                }
             }
-            // 3. Quy luật "Đối xứng" (1-1): Kiểm tra chuỗi lịch sử
-            else if (history.length >= 3 && history[history.length-1] !== history[history.length-2]) {
+            // Lệnh 3: Cầu 2-2 (Cầu đôi)
+            else if (history.length >= 4 && history[history.length-1] === history[history.length-2] && history[history.length-1] !== history[history.length-3]) {
                 final = (history[history.length-1] === "P") ? "B" : "P";
-                logBox.innerText = "> Nhận dạng cầu 1-1 đối xứng.";
+                logBox.innerText = "!! NHẬN DIỆN CẦU ĐÔI 2-2 !!";
             }
-            // 4. Quy luật "Nhà cái ưu thế": Nếu điểm trung bình cao
-            else if ((pScore + bScore) > 12) {
-                final = "B";
-                logBox.innerText = "> Chỉ số Banker tích cực. Đặt Banker.";
-            }
-            // 5. Mặc định: Phân tích dựa trên thuật toán bù trừ
+            // Lệnh 4: Thuật toán bù điểm (Sảnh AI)
             else {
-                final = (pScore + bScore + diff) % 2 === 0 ? "P" : "B";
-                logBox.innerText = "> Tính toán xác suất luồng bài...";
+                let aiCore = (pScore + bScore + history.length) % 2;
+                final = (aiCore === 0) ? "P" : "B";
+                logBox.innerText = "> Dòng bài ổn định - Ưu tiên " + (final == 'P' ? 'Con' : 'Cái');
             }
 
+            // Hiển thị kết quả chốt
             res.innerText = final;
             res.style.color = final == 'P' ? "#0055ff" : "#cc0000";
-            res.style.textShadow = `0 0 20px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
+            res.style.textShadow = `0 0 40px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
             
             // Reset điểm
             pScore = 0; bScore = 0;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
-        }, 1800);
+            
+            if(navigator.vibrate) navigator.vibrate([200, 100, 200]); // Rung mạnh khi có kết quả
+        }, 2500); // Kéo dài thời gian quét cho uy tín
     }
 </script>
 </body>
-    </html>
-    
+            </html>
+            
