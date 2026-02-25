@@ -3,126 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - SERVER INJECTION V3</title>
+    <title>Cong nghe AI 2026</title>
     <style>
         :root {
+            /* ẢNH SẢNH - GIỮ NGUYÊN NHƯ ANH GỬI */
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
             --img-sexy: url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg');
             --img-wm: url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg');
             --img-sa: url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg');
             --img-robot: url('https://i.postimg.cc/vHbKD3t5/pngtree-a-robot-with-round-head-png-image-16287334.png');
-            --bg-auth: radial-gradient(circle, #001a1a, #000);
+
+            /* ẢNH NỀN HỆ THỐNG EM TỰ CHỌN CHO ANH */
+            --bg-login: url('https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=1000');
+            --bg-lobby: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=1000');
+            --accent: #00ffcc;
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { margin: 0; background: #000; color: #fff; overflow: hidden; }
+        * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
+        body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
         /* MÀN HÌNH ĐĂNG NHẬP */
-        .auth-screen { position: fixed; inset: 0; background: var(--bg-auth); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .auth-box { width: 300px; padding: 25px; border: 1px solid #00ffcc; border-radius: 15px; background: rgba(0,0,0,0.9); text-align: center; }
-        .auth-box input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #0f0; outline: none; border-radius: 5px; }
-        .btn-auth { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .auth-screen { 
+            position: fixed; inset: 0; 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), var(--bg-login);
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; z-index: 1000; 
+        }
+        .auth-box { 
+            width: 320px; padding: 30px; border-radius: 20px; 
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+            border: 1px solid var(--accent); text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+        .auth-box input { 
+            width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); 
+            border: 1px solid #333; color: var(--accent); border-radius: 10px; text-align: center; outline: none;
+        }
+        .btn-auth { 
+            width: 100%; padding: 14px; background: var(--accent); color: #000; 
+            border: none; font-weight: 900; cursor: pointer; border-radius: 10px; margin-top: 10px;
+        }
 
-        /* APP CHÍNH */
-        #main-app { display: none; }
-        .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #004d4d; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-weight: bold; border-bottom: 2px solid #00ffcc; }
-        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; height: 100vh; overflow-y: auto; }
-        .card { border-radius: 12px; height: 160px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 15px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border: 1px solid #00ffcc; box-shadow: inset 0 0 10px #000; }
-        .dg { background-image: linear-gradient(to top, #000, transparent), var(--img-dg); }
-        .sexy { background-image: linear-gradient(to top, #000, transparent), var(--img-sexy); }
-        .wm { background-image: linear-gradient(to top, #000, transparent), var(--img-wm); }
-        .sa { background-image: linear-gradient(to top, #000, transparent), var(--img-sa); }
+        /* TRANG SẢNH (LOBBY) */
+        #main-app { 
+            display: none; height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), var(--bg-lobby);
+            background-size: cover; background-position: center;
+        }
+        .top-bar { 
+            height: 60px; background: rgba(0,0,0,0.9); display: flex; 
+            align-items: center; justify-content: space-between; 
+            padding: 0 20px; border-bottom: 1px solid var(--accent);
+        }
+        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; height: calc(100vh - 60px); overflow-y: auto; }
+        .card { 
+            border-radius: 15px; height: 160px; display: flex; align-items: flex-end; justify-content: center; 
+            padding-bottom: 15px; font-weight: bold; cursor: pointer; background-size: cover; 
+            border: 1px solid rgba(0, 255, 204, 0.2); position: relative; overflow: hidden;
+        }
+        .card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #000, transparent); }
+        .card span { position: relative; z-index: 2; font-size: 12px; }
 
-        /* POPUP */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 90%; max-width: 380px; background: #000; border: 2px solid #00ffcc; border-radius: 25px; padding: 20px; text-align: center; position: relative; }
-        .close { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #00ffcc; }
+        /* BẢN PHÂN TÍCH (POPUP) */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
+        .popup { 
+            width: 90%; max-width: 380px; 
+            background: rgba(10, 20, 20, 0.95); /* Nền tối sâu cho bản phân tích */
+            border: 2px solid var(--accent); border-radius: 25px; padding: 25px; 
+            text-align: center; position: relative; box-shadow: 0 0 50px rgba(0, 255, 204, 0.2);
+        }
 
-        /* KHU VỰC NHẬP ĐIỂM 1-9 */
-        .input-score-box { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
-        .score-col { flex: 1; }
-        .score-val { background: #111; border: 1px solid #333; padding: 10px; font-size: 1.5rem; border-radius: 8px; color: #fff; margin-bottom: 5px; }
-        .btn-p-small { background: #0055ff; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: bold; margin-bottom: 5px; }
-        .btn-b-small { background: #cc0000; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: bold; margin-bottom: 5px; }
+        /* ĐIỂM SỐ */
+        .input-score-box { display: flex; justify-content: space-around; margin: 20px 0; }
+        .score-val { 
+            background: rgba(255,255,255,0.05); border: 1px solid #333; 
+            padding: 15px; font-size: 2rem; border-radius: 12px; color: var(--accent); width: 80px;
+        }
 
-        /* MONITOR & ROBOT */
+        /* ROBOT & TIA SÁNG */
         .analysis-monitor {
-            margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 30px;
+            margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 20px;
             position: relative; height: 120px;
         }
         .robot-box { position: relative; width: 100px; height: 100px; }
         .ai-robot-img { 
             width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat;
-            animation: floating 2s ease-in-out infinite;
+            animation: floating 2s ease-in-out infinite; z-index: 5; position: relative;
         }
-
-        /* HIỆU ỨNG CHIẾU SÁNG MỘT HƯỚNG */
-        .beam-light {
-            position: absolute; top: 50%; left: 80%; width: 0; height: 40px;
-            background: linear-gradient(90deg, #00ff00, transparent);
-            filter: blur(10px); transform: translateY(-50%); opacity: 0; transition: 0.2s;
+        .laser-beam {
+            position: absolute; top: 50%; left: 80%; width: 0; height: 3px;
+            background: var(--accent); box-shadow: 0 0 15px var(--accent);
+            opacity: 0; transform: translateY(-50%);
         }
-        .scanning .beam-light { width: 150px; opacity: 1; animation: beam-pulse 0.5s infinite; }
+        .scanning .laser-beam { width: 100px; opacity: 1; animation: laser-pulse 0.2s infinite; }
 
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes beam-pulse { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
+        @keyframes laser-pulse { 0%, 100% { height: 2px; opacity: 0.5; } 50% { height: 5px; opacity: 1; } }
 
-        .res-text { font-size: 4rem; font-weight: 900; color: #111; text-shadow: 0 0 5px rgba(255,255,255,0.05); z-index: 5; }
-        .btn-calc { background: #00ffcc; color: #000; width: 100%; padding: 15px; border-radius: 10px; font-weight: 900; border: none; margin-top: 15px; cursor: pointer; letter-spacing: 2px; }
+        .res-text { font-size: 5rem; font-weight: 900; color: #111; z-index: 2; }
+        .btn-calc { 
+            background: var(--accent); color: #000; width: 100%; padding: 15px; 
+            border-radius: 12px; font-weight: 900; border: none; margin-top: 20px; cursor: pointer;
+        }
 
-        /* NHẬP SỐ 1-9 */
-        .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
-        .num-btn { background: #1a1a1a; border: 1px solid #00ffcc; color: #fff; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .num-btn:active { background: #00ffcc; color: #000; }
-
-        .log-box { font-size: 10px; color: #00ff00; text-align: left; height: 40px; overflow: hidden; margin-top: 10px; font-family: monospace; border-top: 1px solid #111; padding-top: 5px; }
+        /* NUMPAD */
+        .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .num-btn { background: #111; border: 1px solid var(--accent); color: #fff; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        
+        .log-box { font-size: 10px; color: var(--accent); text-align: left; height: 45px; overflow: hidden; margin-top: 15px; font-family: monospace; border-top: 1px solid #222; padding-top: 10px; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:#00ffcc">KJC SYSTEM V3</h2>
-            <input type="text" id="user" placeholder="ID HỆ THỐNG">
-            <input type="password" id="pass" placeholder="MÃ TRUY CẬP">
-            <button class="btn-auth" onclick="login()">KẾT NỐI SERVER</button>
+            <h2 style="color:var(--accent); margin-bottom: 5px;">KJC AI CORE</h2>
+            <p style="font-size: 9px; color: #aaa; margin-bottom: 20px;">SECURITY PROTOCOL ACTIVE</p>
+            <input type="text" id="user" placeholder="USER ID">
+            <input type="password" id="pass" placeholder="PASSWORD">
+            <button class="btn-auth" onclick="login()">CONNECT SYSTEM</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>CHỦ: <b style="color:yellow">ADMIN</b></span>
-            <span onclick="openPopup('pop-xu')">XU: <b id="display-xu" style="color:red">0</b> (NẠP)</span>
+            <span>NETWORK: <b style="color:var(--accent)">SECURED</b></span>
+            <span onclick="openPopup('pop-xu')">CREDITS: <b id="display-xu" style="color:yellow">0</b></span>
         </div>
         <div class="lobby">
-            <div class="card dg" onclick="startInjected('DREAM GAMING')">DG CASINO</div>
-            <div class="card sexy" onclick="startInjected('AE SEXY')">AE SEXY</div>
-            <div class="card wm" onclick="startInjected('WM CASINO')">WM CASINO</div>
-            <div class="card sa" onclick="startInjected('SA GAMING')">SA GAMING</div>
+            <div class="card dg" onclick="startInjected('DREAM GAMING')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
+            <div class="card sexy" onclick="startInjected('AE SEXY')" style="background-image: var(--img-sexy);"><span>AE SEXY</span></div>
+            <div class="card wm" onclick="startInjected('WM CASINO')" style="background-image: var(--img-wm);"><span>WM CASINO</span></div>
+            <div class="card sa" onclick="startInjected('SA GAMING')" style="background-image: var(--img-sa);"><span>SA GAMING</span></div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-tool')">×</span>
-            <div id="injected-status" style="font-size: 10px; color: #00ffcc; margin-bottom: 10px;">CONNECTED TO: DG_BÀN_C01</div>
+            <div id="injected-status" style="font-size: 10px; color: var(--accent); margin-bottom: 10px;">TARGET: STANDBY</div>
             
             <div class="input-score-box">
                 <div class="score-col">
-                    <button class="btn-p-small">PLAYER</button>
+                    <div style="font-size: 10px; color: #0055ff; margin-bottom: 5px;">PLAYER</div>
                     <div class="score-val" id="score-p" onclick="openNum('P')">0</div>
                 </div>
                 <div class="score-col">
-                    <button class="btn-b-small">BANKER</button>
+                    <div style="font-size: 10px; color: #cc0000; margin-bottom: 5px;">BANKER</div>
                     <div class="score-val" id="score-b" onclick="openNum('B')">0</div>
                 </div>
             </div>
 
-            <button class="btn-calc" onclick="tinhToanAI()">PHÂN TÍCH AI</button>
+            <button class="btn-calc" onclick="tinhToanAI()">RUN AI INJECTION</button>
 
             <div class="analysis-monitor" id="monitor">
                 <div class="robot-box">
-                    <div class="beam-light"></div>
+                    <div class="laser-beam"></div>
                     <div class="ai-robot-img"></div>
                 </div>
                 <div id="res-val" class="res-text">?</div>
@@ -133,10 +170,10 @@
     </div>
 
     <div id="pop-num" class="overlay">
-        <div class="popup" style="width: 280px;">
-            <b id="num-target">NHẬP ĐIỂM</b>
+        <div class="popup" style="width: 300px;">
+            <b style="color:var(--accent)">INPUT SCORE (0-9)</b>
             <div class="num-grid">
-                <button class="num-btn" onclick="setScore(1)">1</button><button class="num-btn" onclick="setScore(2)">2</button><button class="num-btn" onclick="setScore(3)">3</button>
+                <button class="num-btn" onclick="setScore(0)">0</button><button class="num-btn" onclick="setScore(1)">1</button<button class="num-btn" onclick="setScore(2)">2</button><button class="num-btn" onclick="setScore(3)">3</button>
                 <button class="num-btn" onclick="setScore(4)">4</button><button class="num-btn" onclick="setScore(5)">5</button><button class="num-btn" onclick="setScore(6)">6</button>
                 <button class="num-btn" onclick="setScore(7)">7</button><button class="num-btn" onclick="setScore(8)">8</button><button class="num-btn" onclick="setScore(9)">9</button>
             </div>
@@ -146,75 +183,51 @@
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
-            <b>NẠP KEY KÍCH HOẠT</b>
-            <input type="text" id="ma-key" style="width:100%; padding:10px; margin:10px 0;">
-            <button class="btn-calc" onclick="napKey()">XÁC NHẬN</button>
+            <b>ACTIVATE SYSTEM KEY</b>
+            <input type="text" id="ma-key" style="width:100%; padding:12px; margin:15px 0; background:#000; border:1px solid #333; color:#fff;">
+            <button class="btn-auth" onclick="napKey()">CONFIRM KEY</button>
         </div>
     </div>
 
 <script>
-    let xu = 0; let targetSide = '';
-    let scoreP = 0; let scoreB = 0;
-
+    let xu = 0; let targetSide = ''; let scoreP = 0; let scoreB = 0;
     function login() { document.getElementById('auth-screen').style.display='none'; document.getElementById('main-app').style.display='block'; }
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-
     function startInjected(name) {
-        const ban = ["C01","C02","C05","C10","BÀN 1","BÀN 6","BÀN 8"];
-        const randomBan = ban[Math.floor(Math.random()*ban.length)];
-        document.getElementById('injected-status').innerText = `INJECTED: ${name} -> ${randomBan}`;
+        const ban = ["C01","C05","BÀN 02","BÀN 10"];
+        document.getElementById('injected-status').innerText = `SERVER: ${name} | PORT: ${ban[Math.floor(Math.random()*4)]}`;
         openPopup('pop-tool');
-        addLog("Bypassing Firewall...");
-        setTimeout(()=> addLog("Accessing Database..."), 500);
-        setTimeout(()=> addLog("Server Injected Successfully!"), 1000);
+        addLog("Scanning Table Data...");
     }
-
-    function openNum(side) { targetSide = side; document.getElementById('num-target').innerText = "ĐIỂM " + (side=='P'?'CON':'CÁI'); openPopup('pop-num'); }
+    function openNum(side) { targetSide = side; openPopup('pop-num'); }
     function setScore(n) {
         if(targetSide == 'P') { scoreP = n; document.getElementById('score-p').innerText = n; }
         else { scoreB = n; document.getElementById('score-b').innerText = n; }
         closePopup('pop-num');
     }
-
-    function addLog(msg) {
-        const log = document.getElementById('ai-logs');
-        log.innerHTML = `> ${msg}<br>` + log.innerHTML;
-    }
-
-    function napKey() { if(document.getElementById('ma-key').value==="KJC2026"){ xu=999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("Đã kích hoạt!"); } }
+    function addLog(msg) { const log = document.getElementById('ai-logs'); log.innerHTML = `> ${msg}<br>` + log.innerHTML; }
+    function napKey() { if(document.getElementById('ma-key').value==="KJC2026"){ xu=999; document.getElementById('display-xu').innerText=xu; closePopup('pop-xu'); alert("System Activated!"); } }
 
     function tinhToanAI() {
-        if(xu <= 0) return alert("Hết xu! Vui lòng nạp Key.");
-        if(scoreP == 0 || scoreB == 0) return alert("Vui lòng nhập điểm cả 2 bên (1-9)!");
-
-        const mon = document.getElementById('monitor');
-        const res = document.getElementById('res-val');
-        
-        mon.classList.add('scanning');
-        res.innerText = "..";
-        addLog("Analyzing Card Patterns...");
-
+        if(xu <= 0) return alert("Hết xu!");
+        if(scoreP == 0 || scoreB == 0) return alert("Nhập điểm 0-9!");
+        const mon = document.getElementById('monitor'); const res = document.getElementById('res-val');
+        mon.classList.add('scanning'); res.innerText = ".."; res.style.color = "#111";
+        addLog("Injecting AI Script...");
         setTimeout(() => {
             xu -= 1; document.getElementById('display-xu').innerText = xu;
             mon.classList.remove('scanning');
-            
-            // Logic nâng cấp: Nếu tổng điểm lẻ thì về B, chẵn thì về P (Ví dụ thôi anh nhé)
-            let result = (scoreP + scoreB) % 2 == 0 ? "P" : "B";
+            let result = (scoreP + scoreB + Math.floor(Math.random()*10)) % 2 == 0 ? "P" : "B";
             res.innerText = result;
             res.style.color = result == 'P' ? "#0055ff" : "#cc0000";
-            res.style.textShadow = `0 0 20px ${result=='P'?'#0055ff':'#cc0000'}`;
-            
-            addLog(`Result Predicted: ${result}`);
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            
-            // Reset điểm sau khi soi xong để bắt khách nhập lại
-            scoreP = 0; scoreB = 0;
-            document.getElementById('score-p').innerText = "0";
-            document.getElementById('score-b').innerText = "0";
+            res.style.textShadow = `0 0 30px ${result=='P'?'#0055ff':'#cc0000'}`;
+            addLog(`Injected Success: [${result}]`);
+            if(navigator.vibrate) navigator.vibrate([150, 50]);
+            scoreP = 0; scoreB = 0; document.getElementById('score-p').innerText = "0"; document.getElementById('score-b').innerText = "0";
         }, 1500);
     }
 </script>
 </body>
-        </html>
+            </html>
             
