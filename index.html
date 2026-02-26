@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congthuc AI - 2026-2027 ROBOT</title>
+    <title>Congnghe AI 2026</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -19,7 +19,8 @@
 
         .auth-screen { position: fixed; inset: 0; background: radial-gradient(circle, #001a1a, #000); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .auth-box { width: 290px; padding: 25px; border-radius: 20px; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--accent); text-align: center; }
-        
+        .auth-box input { width: 100%; padding: 10px; margin: 8px 0; background: #111; border: 1px solid #333; color: var(--accent); border-radius: 8px; text-align: center; outline: none; }
+
         #main-app { display: none; height: 100vh; background: #050505; }
         .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid var(--accent); font-size: 12px; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; height: calc(100vh - 50px); overflow-y: auto; }
@@ -27,62 +28,96 @@
         .card span { z-index: 2; font-size: 10px; text-shadow: 0 0 5px #000; }
 
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 88%; max-width: 310px; background: #0a0a0a; border: 1.5px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
+        .popup { width: 88%; max-width: 310px; background: #0a0a0a; border: 1.5px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; overflow: hidden; }
+        
+        .table-selector { margin-bottom: 12px; font-size: 10px; display: flex; justify-content: center; gap: 8px; }
+        .btn-table { background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
         .input-row { display: flex; justify-content: space-around; margin: 12px 0; }
-        .score-box { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border-radius: 10px; color: var(--accent); cursor: pointer; }
-        .score-box.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        .score-box { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border-radius: 10px; color: var(--accent); cursor: pointer; transition: 0.3s; }
+        .score-box.active { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        /* ROBOT CHUYỂN ĐỘNG THẬT */
+        /* MONITORING & ROBOT DYNAMIC */
         .monitor-area { margin-top: 15px; display: flex; align-items: center; justify-content: center; position: relative; height: 110px; gap: 20px; }
-        .robot-wrapper { position: relative; width: 80px; height: 80px; perspective: 1000px; }
+        
+        .robot-wrapper { position: relative; width: 75px; height: 75px; z-index: 5; }
         .robot-img { 
             width: 100%; height: 100%; 
             background: var(--img-robot) center/contain no-repeat; 
-            animation: robotBody 3s ease-in-out infinite, robotMove 1.5s ease-in-out infinite; 
+            animation: robotDance 3s ease-in-out infinite; 
         }
-
+        
         /* TIA SÉT ĐIỆN QUANG */
-        .lightning-bolt {
-            position: absolute; left: 80px; top: 40%; width: 0; height: 4px;
-            background: #fff; box-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff, 0 0 30px #fff;
-            opacity: 0; transform-origin: left; pointer-events: none; z-index: 10;
+        .lightning {
+            position: absolute; left: 70px; top: 50%; width: 0; height: 4px;
+            background: #fff; box-shadow: 0 0 10px #fff, 0 0 20px var(--accent), 0 0 30px #0055ff;
+            opacity: 0; transform: translateY(-50%); z-index: 4;
+            clip-path: polygon(0% 50%, 10% 20%, 20% 60%, 30% 10%, 40% 70%, 50% 30%, 60% 80%, 70% 20%, 80% 60%, 90% 10%, 100% 50%);
         }
-        .scanning .lightning-bolt {
-            width: 70px; opacity: 1; animation: lightningFlash 0.1s steps(2) infinite;
+        .scanning .lightning {
+            width: 70px; opacity: 1; animation: bolt 0.1s steps(2) infinite;
         }
 
-        .res-container { display: flex; flex-direction: column; align-items: center; z-index: 5; }
-        .res-display { font-size: 3.2rem; font-weight: 900; color: #111; transition: 0.3s; }
+        /* HIỆU ỨNG PHÁT SÁNG CHẠY QUANH CHỮ */
+        .res-container { position: relative; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .res-display { font-size: 3.2rem; font-weight: 900; color: #111; z-index: 2; transition: 0.3s; }
+        
+        .glow-ring {
+            position: absolute; inset: 0; border: 2px solid transparent; border-radius: 50%;
+            opacity: 0; transition: 0.5s;
+        }
+        .scanning .glow-ring { opacity: 0; }
+        .active-res .glow-ring {
+            opacity: 1; border-top-color: var(--accent);
+            animation: rotateGlow 1s linear infinite;
+        }
+
         .win-rate { font-size: 11px; color: #ffff00; font-weight: bold; margin-top: -5px; opacity: 0; }
 
+        /* PHÍM BẤM */
         .num-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 12px; }
-        .n-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 0; border-radius: 6px; font-size: 12px; }
+        .n-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 0; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
-        @keyframes robotBody { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(2deg); } }
-        @keyframes robotMove { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.05); filter: brightness(1.2); } }
-        @keyframes lightningFlash { 0% { clip-path: polygon(0 40%, 100% 0, 80% 50%, 100% 100%, 0 60%); } 100% { clip-path: polygon(0 50%, 100% 20%, 70% 60%, 100% 80%, 0 40%); } }
+        .log-txt { font-size: 9px; color: var(--accent); height: 30px; overflow: hidden; margin-top: 10px; text-align: left; opacity: 0.8; }
 
-        .log-txt { font-size: 9px; color: var(--accent); height: 30px; margin-top: 10px; text-align: left; opacity: 0.8; }
+        /* ANIMATIONS */
+        @keyframes robotDance {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            25% { transform: translateY(-10px) rotate(2deg); }
+            50% { transform: translateY(0) rotate(-2deg) scale(1.05); }
+            75% { transform: translateY(-10px) rotate(2deg); }
+        }
+        @keyframes bolt {
+            0% { clip-path: polygon(0% 50%, 15% 10%, 35% 80%, 55% 20%, 75% 90%, 100% 50%); }
+            100% { clip-path: polygon(0% 50%, 10% 70%, 30% 10%, 50% 90%, 80% 30%, 100% 50%); }
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); box-shadow: 0 -5px 15px var(--glow-color); }
+            100% { transform: rotate(360deg); box-shadow: 0 -5px 15px var(--glow-color); }
+        }
+
+        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 180px; overflow-y: auto; padding: 10px; }
+        .t-item { background: #111; border: 1px solid #333; padding: 10px 0; font-size: 9px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:var(--accent); font-size: 16px;">Công thức AI - 2026-2027 ROOBOT</h2>
-            <input type="password" id="pass" placeholder="ACCESS KEY" style="width:100%; padding:10px; margin:8px 0; background:#111; border:1px solid #333; color:var(--accent); border-radius:8px; text-align:center;">
-            <button onclick="login()" style="background:var(--accent); width:100%; padding:12px; border-radius:10px; border:none; font-weight:900;">KÍCH HOẠT HỆ THỐNG</button>
+            <h2 style="color:var(--accent); font-size: 16px;">©ông Nghệ AI - 2026</h2>
+            <input type="text" id="user" placeholder="Tên vào Tool">
+            <input type="password" id="pass" placeholder="Mật khẩu Tool">
+            <button style="background:var(--accent); color:#000; width:100%; padding:12px; border-radius:10px; font-weight:900; border:none; margin-top:10px; cursor:pointer;" onclick="login()">KÍCH HOẠT HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>CORE: <b style="color:var(--accent)">RAD-72 MODE</b></span>
+            <span>ADMIN: <b style="color:var(--accent)">PHÓNG XẠ</b></span>
             <span onclick="openPopup('pop-xu')">XU: <b id="display-xu" style="color:yellow">0</b></span>
         </div>
         <div class="lobby">
-            <div class="card" onclick="openTool('DG')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
+            <div class="card" onclick="openTool('DREAM')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
             <div class="card" onclick="openTool('SEXY')" style="background-image: var(--img-sexy);"><span>AE SEXY</span></div>
             <div class="card" onclick="openTool('WM')" style="background-image: var(--img-wm);"><span>WM CASINO</span></div>
             <div class="card" onclick="openTool('SA')" style="background-image: var(--img-sa);"><span>SA GAMING</span></div>
@@ -92,7 +127,9 @@
     <div id="pop-tool" class="overlay">
         <div class="popup">
             <span style="position:absolute; right:15px; top:5px; color:var(--accent); cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
-            <button class="btn-table" id="current-table" onclick="openPopup('pop-select-table')" style="background:none; border:1px solid var(--accent); color:var(--accent); font-size:10px; padding:4px 8px; border-radius:4px;">CHỌN BÀN</button>
+            <div class="table-selector">
+                <button class="btn-table" id="current-table" onclick="openPopup('pop-select-table')">CHỌN BÀN</button>
+            </div>
             
             <div class="input-row">
                 <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
@@ -101,39 +138,48 @@
 
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
-                    <div class="lightning-bolt"></div>
+                    <div class="lightning"></div>
                     <div class="robot-img"></div>
                 </div>
-                <div class="res-container">
+                <div class="res-container" id="res-box">
+                    <div class="glow-ring"></div>
                     <div id="res-text" class="res-display">?</div>
                     <div id="res-rate" class="win-rate">0%</div>
                 </div>
             </div>
-            <div id="logs" class="log-txt">> Chờ nạp dữ liệu...</div>
+            <div id="logs" class="log-txt">> Chờ nạp năng lượng...</div>
         </div>
     </div>
 
-    <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div class="num-pad">
-        <button class="n-btn" onclick="inputNum(0)">0</button><button class="n-btn" onclick="inputNum(1)">1</button><button class="n-btn" onclick="inputNum(2)">2</button><button class="n-btn" onclick="inputNum(3)">3</button><button class="n-btn" onclick="inputNum(4)">4</button>
-        <button class="n-btn" onclick="inputNum(5)">5</button><button class="n-btn" onclick="inputNum(6)">6</button><button class="n-btn" onclick="inputNum(7)">7</button><button class="n-btn" onclick="inputNum(8)">8</button><button class="n-btn" onclick="inputNum(9)">9</button>
-    </div></div></div>
+    <div id="pop-num" class="overlay">
+        <div class="popup" style="max-width:280px;">
+            <div class="num-pad">
+                <button class="n-btn" onclick="inputNum(0)">0</button><button class="n-btn" onclick="inputNum(1)">1</button><button class="n-btn" onclick="inputNum(2)">2</button><button class="n-btn" onclick="inputNum(3)">3</button><button class="n-btn" onclick="inputNum(4)">4</button>
+                <button class="n-btn" onclick="inputNum(5)">5</button><button class="n-btn" onclick="inputNum(6)">6</button><button class="n-btn" onclick="inputNum(7)">7</button><button class="n-btn" onclick="inputNum(8)">8</button><button class="n-btn" onclick="inputNum(9)">9</button>
+            </div>
+        </div>
+    </div>
 
-    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>CHỌN BÀN</b><div id="table-list" style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-top:10px;"></div></div></div>
-    <div id="pop-xu" class="overlay"><div class="popup"><b>NẠP</b><input type="text" id="key-input" style="width:100%; background:#000; color:#fff; border:1px solid #333; padding:10px; margin:10px 0;"><button onclick="activeKey()" style="background:var(--accent); width:100%; padding:10px; border:none; font-weight:bold;">XÁC NHẬN</button></div></div>
+    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>HỆ THỐNG BÀN</b><div class="table-grid" id="table-list"></div></div></div>
+    <div id="pop-xu" class="overlay"><div class="popup"><b>NẠP</b><input type="text" id="key-input" style="width:100%; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-table" style="width:100%" onclick="activeKey()">XÁC NHẬN</button></div></div>
 
 <script>
     let xu = 0; let curSide = ''; let pScore = null; let bScore = null;
     let history = [];
 
     const tList = document.getElementById('table-list');
-    for(let i=1; i<=15; i++){
-        let d = document.createElement('div'); d.innerText = 'C'+(i<10?'0'+i:i); d.style.background='#111'; d.style.padding='10px 0'; d.style.fontSize='10px'; d.onclick=()=>{document.getElementById('current-table').innerText=d.innerText; history=[]; closePopup('pop-select-table');};
+    for(let i=1; i<=10; i++) { createTItem(`BÀN ${i}`); }
+    for(let i=1; i<=15; i++) { createTItem(`BÀN C${i < 10 ? '0'+i : i}`); }
+
+    function createTItem(name) {
+        let d = document.createElement('div'); d.className = 't-item'; d.innerText = name;
+        d.onclick = () => { document.getElementById('current-table').innerText = name; history = []; closePopup('pop-select-table'); };
         tList.appendChild(d);
     }
 
     function login() { document.getElementById('auth-screen').style.display='none'; document.getElementById('main-app').style.display='block'; }
-    function openPopup(id) { document.getElementById(id).style.display='flex'; }
-    function closePopup(id) { document.getElementById(id).style.display='none'; }
+    function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
+    function closePopup(id) { document.getElementById(id).style.display = 'none'; }
     function openTool() { openPopup('pop-tool'); }
     function setSide(s) { curSide = s; openPopup('pop-num'); }
 
@@ -141,53 +187,67 @@
         if(curSide == 'P') { pScore = n; document.getElementById('p-val').innerText = n; document.getElementById('p-val').classList.add('active'); }
         else { bScore = n; document.getElementById('b-val').innerText = n; document.getElementById('b-val').classList.add('active'); }
         closePopup('pop-num');
-        if(pScore !== null && bScore !== null) autoLightningBrain();
+        if(pScore !== null && bScore !== null) autoPlasmaAI();
     }
 
     function activeKey() { if(document.getElementById('key-input').value === "Admin") { xu = 99; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); } }
 
-    function autoLightningBrain() {
-        if(xu <= 0) return alert("Cần nạp thêm Credit!");
+    function autoPlasmaAI() {
+        if(xu <= 0) return alert("Hết xu!");
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const rate = document.getElementById('res-rate');
         const logBox = document.getElementById('logs');
+        const resBox = document.getElementById('res-box');
 
         mon.classList.add('scanning');
-        res.innerText = ".."; rate.style.opacity = "0";
-        logBox.innerText = "> Robot đang phóng xạ tia sét phân tích...";
+        resBox.classList.remove('active-res');
+        res.innerText = ".."; res.style.color = "#111";
+        logBox.innerText = "> Đang giải mã Plasma Bolt...";
 
         setTimeout(() => {
             xu -= 1; document.getElementById('display-xu').innerText = xu;
             mon.classList.remove('scanning');
+            resBox.classList.add('active-res');
 
+            // --- CÔNG THỨC AI CẢI TIẾN THEO YÊU CẦU ---
+            let brainMod = 0;
+            // Bên Cái (Banker) ra 0,1,2,3,4,8 thì cộng 1
+            if([0,1,2,3,4,8].includes(bScore)) brainMod += 1;
+            // Bên Con (Player) ra 5,7,6,9 thì KHÔNG cộng (giữ nguyên)
+            
             let lastWin = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
             if (lastWin !== "T") history.push(lastWin);
+
+            let final = "";
+            let logicVal = (pScore + bScore + brainMod + history.length) % 2;
             
-            // CÔNG THỨC ANH TRAI YÊU CẦU:
-            let customMod = 0;
-            if([0,1,2,3,4,8].includes(bScore)) customMod += 1; // Banker ra 012348 cộng 1
-            // Con ra 5769 giữ nguyên (không làm gì)
+            if (history.length > 3 && history.slice(-3).every(v => v === history[history.length-1])) {
+                final = history[history.length-1]; // Bám bệt
+            } else {
+                final = logicVal === 0 ? "B" : "P";
+            }
 
-            let brainKey = (pScore + bScore + customMod + history.length) % 2;
-            let final = (brainKey === 0) ? "P" : "B";
-            let winPerc = Math.floor(Math.random() * (96 - 85 + 1)) + 85;
-
+            // Hiệu ứng và màu sắc
             res.innerText = final;
-            res.style.color = final == 'P' ? "#0055ff" : "#cc0000";
-            res.style.textShadow = `0 0 30px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
-            rate.innerText = winPerc + "% WIN";
-            rate.style.opacity = "1";
-            logBox.innerText = `> ${final=='P'?'PLAYER':'BANKER'} - Xung điện: ${winPerc}%`;
-
-            pScore = null; bScore = null;
-            document.getElementById('p-val').innerText = "0"; document.getElementById('b-val').innerText = "0";
-            document.getElementById('p-val').classList.remove('active'); document.getElementById('b-val').classList.remove('active');
+            let color = final === 'P' ? "#0055ff" : "#cc0000";
+            res.style.color = color;
+            resBox.style.setProperty('--glow-color', color);
+            res.style.textShadow = `0 0 20px ${color}`;
             
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 300]);
+            rate.innerText = (75 + Math.floor(Math.random() * 20)) + "% WIN";
+            rate.style.opacity = "1";
+            logBox.innerText = `> Đã chốt: ${final == 'P' ? 'PLAYER' : 'BANKER'}`;
+
+            // Reset
+            pScore = null; bScore = null;
+            document.getElementById('p-val').innerText = "0";
+            document.getElementById('b-val').innerText = "0";
+            document.getElementById('p-val').classList.remove('active');
+            document.getElementById('b-val').classList.remove('active');
         }, 2200);
     }
 </script>
 </body>
-                        </html>
-                        
+                </html>
+    
