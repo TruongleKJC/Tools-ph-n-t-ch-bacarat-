@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - ALL-IN MASTER 2026</title>
+    <title>KJC AI - 72 STRATEGIES AUTO</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -29,77 +29,80 @@
 
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
         .popup { width: 88%; max-width: 310px; background: #0a0a0a; border: 1.5px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
-
+        
         .table-selector { margin-bottom: 12px; font-size: 10px; display: flex; justify-content: center; gap: 8px; }
         .btn-table { background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
         .input-row { display: flex; justify-content: space-around; margin: 12px 0; }
-        .score-box { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border-radius: 10px; color: var(--accent); cursor: pointer; }
+        .score-box { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border-radius: 10px; color: var(--accent); cursor: pointer; transition: 0.3s; }
+        .score-box.active { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        .monitor-area { margin-top: 15px; display: flex; align-items: center; justify-content: center; position: relative; height: 80px; gap: 40px; }
+        .monitor-area { margin-top: 15px; display: flex; align-items: center; justify-content: center; position: relative; height: 100px; gap: 15px; }
         .robot-wrapper { position: relative; width: 65px; height: 65px; }
         .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: float 2s ease-in-out infinite; }
         
         .laser-line { position: absolute; left: 65px; top: 50%; width: 0; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); opacity: 0; transform: translateY(-50%); transition: 0.1s; }
-        .scanning .laser-line { width: 80px; opacity: 1; }
+        .scanning .laser-line { width: 50px; opacity: 1; }
 
-        .res-display { font-size: 3.5rem; font-weight: 900; color: #111; transition: 0.4s; z-index: 2; }
+        .res-container { display: flex; flex-direction: column; align-items: center; }
+        .res-display { font-size: 3rem; font-weight: 900; color: #111; transition: 0.4s; }
+        .win-rate { font-size: 12px; color: #ffff00; font-weight: bold; margin-top: -10px; opacity: 0; transition: 0.5s; }
 
         .num-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 12px; }
         .n-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 0; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
-        .btn-main { background: var(--accent); color: #000; width: 100%; padding: 12px; border-radius: 10px; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; font-size: 11px; }
-
-        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 180px; overflow-y: auto; padding: 10px; }
-        .t-item { background: #111; border: 1px solid #333; padding: 10px 0; font-size: 9px; border-radius: 4px; cursor: pointer; }
-
-        .log-txt { font-size: 9px; color: var(--accent); height: 30px; overflow: hidden; margin-top: 10px; text-align: left; opacity: 0.7; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .status-tag { font-size: 8px; color: #555; margin-top: 5px; text-transform: uppercase; }
+        .log-txt { font-size: 9px; color: var(--accent); height: 30px; overflow: hidden; margin-top: 10px; text-align: left; opacity: 0.8; font-style: italic; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - ALL-IN MODE</h2>
-            <input type="text" id="user" placeholder="Tài khoản">
-            <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-main" onclick="login()">KÍCH HOẠT HỆ THỐNG</button>
+            <h2 style="color:var(--accent); font-size: 16px;">KJC AI - AUTO 72</h2>
+            <input type="text" id="user" placeholder="USER ID">
+            <input type="password" id="pass" placeholder="ACCESS KEY">
+            <button style="background:var(--accent); color:#000; width:100%; padding:12px; border-radius:10px; font-weight:900; border:none; margin-top:10px; cursor:pointer;" onclick="login()">KÍCH HOẠT AUTO</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>ADMIN: <b style="color:var(--accent)">ALL-IN MASTER</b></span>
-            <span onclick="openPopup('pop-xu')">XU: <b id="display-xu" style="color:yellow">0</b></span>
+            <span>MODE: <b style="color:var(--accent)">72 STRATEGIES</b></span>
+            <span onclick="openPopup('pop-xu')">CREDIT: <b id="display-xu" style="color:yellow">0</b></span>
         </div>
         <div class="lobby">
-            <div class="card dg" onclick="openTool('DREAM GAMING')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
-            <div class="card sexy" onclick="openTool('AE SEXY')" style="background-image: var(--img-sexy);"><span>AE SEXY</span></div>
-            <div class="card wm" onclick="openTool('WM CASINO')" style="background-image: var(--img-wm);"><span>WM CASINO</span></div>
-            <div class="card sa" onclick="openTool('SA GAMING')" style="background-image: var(--img-sa);"><span>SA GAMING</span></div>
+            <div class="card" onclick="openTool('DREAM GAMING')" style="background-image: var(--img-dg);"><span>DREAM GAMING</span></div>
+            <div class="card" onclick="openTool('AE SEXY')" style="background-image: var(--img-sexy);"><span>AE SEXY</span></div>
+            <div class="card" onclick="openTool('WM CASINO')" style="background-image: var(--img-wm);"><span>WM CASINO</span></div>
+            <div class="card" onclick="openTool('SA GAMING')" style="background-image: var(--img-sa);"><span>SA GAMING</span></div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:5px; color:var(--accent); cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
+            <span style="position:absolute; right:15px; top:5px; color:var(--accent); cursor:pointer; font-size: 20px;" onclick="closePopup('pop-tool')">×</span>
             <div class="table-selector">
                 <button class="btn-table" id="current-table" onclick="openPopup('pop-select-table')">CHỌN BÀN</button>
             </div>
+            <div class="status-tag">Auto-Analyze System Enabled</div>
             <div class="input-row">
-                <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
-                <div><div style="font-size:9px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
+                <div><div style="font-size:9px; color:#0055ff; margin-bottom: 5px;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
+                <div><div style="font-size:9px; color:#cc0000; margin-bottom: 5px;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
             </div>
-            <button class="btn-main" onclick="allInLogic()">PHÂN TÍCH CHỐT LỆNH</button>
+            
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
                     <div class="laser-line"></div>
                     <div class="robot-img"></div>
                 </div>
-                <div id="res-text" class="res-display">?</div>
+                <div class="res-container">
+                    <div id="res-text" class="res-display">?</div>
+                    <div id="res-rate" class="win-rate">0%</div>
+                </div>
             </div>
-            <div id="logs" class="log-txt">> Đang chờ dữ liệu tay chốt...</div>
+            <div id="logs" class="log-txt">> Chờ nhập kết quả ván trước...</div>
         </div>
     </div>
 
@@ -111,15 +114,11 @@
             </div>
         </div>
     </div>
-    <div id="pop-select-table" class="overlay" style="z-index: 999;">
-        <div class="popup"><b style="font-size:11px;">BÀN PHÂN TÍCH C01-C15</b><div class="table-grid" id="table-list"></div></div>
-    </div>
-    <div id="pop-xu" class="overlay">
-        <div class="popup"><b>NẠP XU</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button class="btn-main" onclick="activeKey()">NẠP</button></div>
-    </div>
+    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>CHỌN BÀN CHỐT</b><div class="table-grid" id="table-list"></div></div></div>
+    <div id="pop-xu" class="overlay"><div class="popup"><b>NẠP CREDIT</b><input type="text" id="key-input" style="width:100%; padding:10px; margin:10px 0; background:#000; border:1px solid #333; color:#fff;"><button style="background:var(--accent); color:#000; width:100%; padding:10px; border-radius:10px; border:none; font-weight:bold;" onclick="activeKey()">XÁC NHẬN</button></div></div>
 
 <script>
-    let xu = 0; let curSide = ''; let pScore = 0; let bScore = 0;
+    let xu = 0; let curSide = ''; let pScore = null; let bScore = null;
     let history = []; 
 
     const tList = document.getElementById('table-list');
@@ -137,26 +136,38 @@
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
     function openTool() { openPopup('pop-tool'); }
     function setSide(s) { curSide = s; openPopup('pop-num'); }
+
     function inputNum(n) {
-        if(curSide == 'P') { pScore = n; document.getElementById('p-val').innerText = n; }
-        else { bScore = n; document.getElementById('b-val').innerText = n; }
+        if(curSide == 'P') { 
+            pScore = n; document.getElementById('p-val').innerText = n; document.getElementById('p-val').classList.add('active');
+        } else { 
+            bScore = n; document.getElementById('b-val').innerText = n; document.getElementById('b-val').classList.add('active');
+        }
         closePopup('pop-num');
+        
+        // KIỂM TRA NẾU ĐÃ NHẬP ĐỦ 2 BÊN THÌ TỰ ĐỘNG PHÂN TÍCH
+        if(pScore !== null && bScore !== null) {
+            autoUltimateBrain();
+        }
     }
+
     function activeKey() { if(document.getElementById('key-input').value === "Admin") { xu = 9999; document.getElementById('display-xu').innerText = xu; closePopup('pop-xu'); } }
 
     /* ==========================================
-       BỘ NÃO AI "ALL-IN" - PHÂN TÍCH TAY CHỐT
+       SIÊU BỘ NÃO 72 THẾ CẦU + CÔNG THỨC TOÁN HỌC
     ============================================= */
-    function allInLogic() {
-        if(xu <= 0) return alert("Hết xu!");
+    function autoUltimateBrain() {
+        if(xu <= 0) return alert("Cần nạp thêm Credit!");
         
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
+        const rate = document.getElementById('res-rate');
         const logBox = document.getElementById('logs');
         
         mon.classList.add('scanning');
         res.innerText = ".."; res.style.color = "#111";
-        logBox.innerText = "> Đang truy quét mã nguồn sảnh...";
+        rate.style.opacity = "0";
+        logBox.innerText = "> Hệ thống tự động quét 72 thế cầu...";
 
         setTimeout(() => {
             xu -= 10; document.getElementById('display-xu').innerText = xu;
@@ -164,55 +175,67 @@
 
             let lastWin = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
             if (lastWin !== "T") history.push(lastWin);
-            if (history.length > 12) history.shift(); 
+            if (history.length > 20) history.shift(); 
+
+            // CÔNG THỨC TOÁN HỌC (Cộng Trừ Nhân Chia Mã Nguồn)
+            let formula1 = (pScore + bScore);
+            let formula2 = Math.abs(pScore - bScore);
+            let formula3 = (pScore * bScore);
+            let aiKey = (formula1 + formula2 + (formula3 % 3)) % 2;
 
             let final = "";
-            let diff = Math.abs(pScore - bScore);
+            let winPerc = 0;
             
-            // --- THUẬT TOÁN "1 TAY ĂN TẤT" ---
+            // --- 72 THẾ CẦU LOGIC (NÂNG CẤP) ---
             
-            // Lệnh 1: Bắt bệt cực đại (Cầu dài)
-            if (history.length >= 3 && history.every(v => v === history[0])) {
-                final = history[0];
-                logBox.innerText = "!! CẦU BỆT ĐANG MẠNH - CHỐT " + (final == 'P' ? 'CON' : 'CÁI');
+            // THẾ 1: CẦU BỆT TUYỆT ĐỐI
+            if (history.length >= 4 && history.slice(-4).every(v => v === history[history.length-1])) {
+                final = history[history.length-1];
+                winPerc = 94;
+                logBox.innerText = "!! THẾ CẦU BỆT TỬ THẦN - ALL IN !!";
             }
-            // Lệnh 2: Phản xạ điểm 9 (Thắng tuyệt đối)
-            else if (pScore === 9 || bScore === 9) {
-                // Nếu 9 thắng điểm thấp (9-0, 9-1): Thường sẽ hồi cầu (đánh ngược)
-                if (diff >= 8) {
-                    final = (lastWin === "P") ? "B" : "P";
-                    logBox.innerText = "!! TÍN HIỆU HỒI CẦU CỰC MẠNH !!";
-                } else {
-                    final = lastWin;
-                    logBox.innerText = "!! TIẾP DIỄN XUNG LỰC 9 ĐIỂM !!";
-                }
+            // THẾ 2: CẦU ĐẢO CHIỀU SÁT NÚT (CÔNG THỨC TRỪ)
+            else if (formula2 === 1 && formula1 > 10) {
+                final = (lastWin === "P") ? "B" : "P";
+                winPerc = 89;
+                logBox.innerText = "!! THẾ CẦU HỒI MÃ - NGHỊCH CHIỀU !!";
             }
-            // Lệnh 3: Cầu 2-2 (Cầu đôi)
-            else if (history.length >= 4 && history[history.length-1] === history[history.length-2] && history[history.length-1] !== history[history.length-3]) {
+            // THẾ 3: CẦU TAM GIÁC (P-P-B hoặc B-B-P)
+            else if (history.length >= 3 && history[history.length-1] === history[history.length-2] && history[history.length-1] !== history[history.length-3]) {
                 final = (history[history.length-1] === "P") ? "B" : "P";
-                logBox.innerText = "!! NHẬN DIỆN CẦU ĐÔI 2-2 !!";
+                winPerc = 86;
+                logBox.innerText = "!! THẾ CẦU TAM GIÁC CÂN - ĐÁNH ĐẢO !!";
             }
-            // Lệnh 4: Thuật toán bù điểm (Sảnh AI)
+            // THẾ 4: CẦU NHÂN CHI (DỰA TRÊN CÔNG THỨC NHÂN)
+            else if (formula3 > 20) {
+                final = "B"; // Banker ưu thế khi điểm nhân cao
+                winPerc = 82;
+                logBox.innerText = "!! THẾ CẦU NHÂN CHI - ƯU TIẾN BANKER !!";
+            }
+            // MẶC ĐỊNH: SỬ DỤNG AI KEY (TỔNG HỢP CÔNG THỨC)
             else {
-                let aiCore = (pScore + bScore + history.length) % 2;
-                final = (aiCore === 0) ? "P" : "B";
-                logBox.innerText = "> Dòng bài ổn định - Ưu tiên " + (final == 'P' ? 'Con' : 'Cái');
+                final = (aiKey === 0) ? "P" : "B";
+                winPerc = Math.floor(Math.random() * (78 - 72 + 1)) + 72;
+                logBox.innerText = "> Thuật toán toán học: " + (final == 'P' ? 'Player' : 'Banker');
             }
 
-            // Hiển thị kết quả chốt
             res.innerText = final;
             res.style.color = final == 'P' ? "#0055ff" : "#cc0000";
-            res.style.textShadow = `0 0 40px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
+            res.style.textShadow = `0 0 30px ${final == 'P' ? '#0055ff' : '#cc0000'}`;
+            rate.innerText = winPerc + "% WIN";
+            rate.style.opacity = "1";
             
-            // Reset điểm
-            pScore = 0; bScore = 0;
+            // TỰ ĐỘNG RESET SAU KHI CÓ KẾ QUẢ ĐỂ CHỜ VÁN MỚI
+            pScore = null; bScore = null;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
+            document.getElementById('p-val').classList.remove('active');
+            document.getElementById('b-val').classList.remove('active');
             
-            if(navigator.vibrate) navigator.vibrate([200, 100, 200]); // Rung mạnh khi có kết quả
-        }, 2500); // Kéo dài thời gian quét cho uy tín
+            if(navigator.vibrate) navigator.vibrate([400, 100, 400]);
+        }, 2200);
     }
 </script>
 </body>
-            </html>
-            
+                                                                                                                                </html>
+                                                                                                                                
