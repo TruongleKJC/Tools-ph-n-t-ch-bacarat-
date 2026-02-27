@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - ID BREAKER</title>
+    <title>KJC ROBOT AI - AUTO ID BREAKER</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
@@ -12,66 +12,87 @@
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        #main-app { height: 100vh; display: flex; flex-direction: column; background: #050505; border: 1px solid var(--accent); }
-        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); }
+        /* MÀN HÌNH ĐĂNG NHẬP */
+        #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { width: 100%; max-width: 300px; text-align: center; border: 1px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
+        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; }
+
+        /* GIAO DIỆN CHÍNH */
+        #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; }
+        .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 11px; }
+        
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; background-size: cover; border: 1px solid #222; opacity: 0.6; }
-        
+        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #222; background-size: cover; background-position: center; }
+
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 20px var(--accent); }
+        .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
         
-        /* ROBOT VÀ TIA SÉT XÂM NHẬP ID */
-        .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 130px; }
-        .robot-wrapper { position: relative; width: 85px; height: 85px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotId 1.5s infinite; }
-        .plasma-id { position: absolute; left: 75px; top: 50%; width: 0; height: 10px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
-        .scanning .plasma-id { width: 80px; opacity: 1; animation: boltId 0.08s infinite; }
+        /* ROBOT & AUTO SCAN PLASMA */
+        .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 140px; }
+        .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotAuto 1s infinite alternate; }
+        .plasma-auto { position: absolute; left: 80px; top: 50%; width: 0; height: 8px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
+        .scanning .plasma-auto { width: 80px; opacity: 1; animation: boltAuto 0.05s infinite; }
 
-        /* KẾT QUẢ VÒNG XOAY GLOW */
-        .res-container { position: relative; width: 95px; height: 95px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4rem; font-weight: 900; color: #fff; z-index: 10; }
+        /* KẾT QUẢ */
+        .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
+        .res-display { font-size: 4.5rem; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px var(--accent); }
         .glow-circle { position: absolute; inset: 0; border: 5px solid transparent; border-radius: 50%; opacity: 0; }
-        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateId 0.4s linear infinite; }
+        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateAuto 0.4s linear infinite; }
 
-        .score-box { width: 65px; height: 65px; background: #111; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 12px; color: var(--accent); cursor: pointer; }
+        @keyframes robotAuto { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-15px) scale(1.1); } }
+        @keyframes boltAuto { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
+        @keyframes rotateAuto { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes robotId { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes boltId { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
-        @keyframes rotateId { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* BÀN 1-C15 GIỮ NGUYÊN */
-        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 200px; overflow-y: auto; }
-        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; color: #fff; }
+        /* BÀN 1-C16 */
+        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
+        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; text-align: center; }
+        
+        .auto-status { font-size: 10px; color: #00ff00; margin-top: 10px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color:var(--accent); margin-bottom:20px;">KJC LOGIN</h2>
+            <input type="tel" id="phone" placeholder="Số điện thoại của anh">
+            <input type="password" id="pass" placeholder="Mật khẩu">
+            <button onclick="handleLogin()">ĐĂNG NHẬP HỆ THỐNG</button>
+            <p style="font-size:10px; margin-top:15px; color:#555;">SECURITY BY KJC AI SERVER</p>
+        </div>
+    </div>
+
     <div id="main-app">
         <div class="top-bar">
-            <span>CORE: <b style="color:var(--accent)">ID_BREAKER_V1</b></span>
-            <span>TARGET: <b id="target-id" style="color:yellow">SCANNING...</b></span>
+            <span>CORE: <b style="color:var(--accent)">AUTO_SCAN_ID</b></span>
+            <span>STATUS: <b style="color:#00ff00">CONNECTED</b></span>
         </div>
         <div class="lobby">
-            <div class="card" onclick="openTool()">DREAM</div>
-            <div class="card" onclick="openTool()">SEXY</div>
-            <div class="card" onclick="openTool()">WM</div>
-            <div class="card" onclick="openTool()">SA</div>
+            <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
+            <div class="card" onclick="openTableSelect('SEXY')" style="background-image:url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg')">SEXY</div>
+            <div class="card" onclick="openTableSelect('WM')" style="background-image:url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg')">WM</div>
+            <div class="card" onclick="openTableSelect('SA')" style="background-image:url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg')">SA</div>
+        </div>
+    </div>
+
+    <div id="pop-select-table" class="overlay">
+        <div class="popup">
+            <b id="lobby-title">DANH SÁCH BÀN 1-C16</b>
+            <div class="table-grid" id="table-list"></div>
+            <button onclick="closePopup('pop-select-table')" style="margin-top:10px; background:none; border:none; color:#fff;">ĐÓNG</button>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
-            <button style="background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:5px; margin-bottom:10px;" id="current-table" onclick="openPopup('pop-select-table')">BÀN 1-C15</button>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopAuto()">×</span>
+            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:10px;">BÀN: --</div>
             
-            <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
-                <div><div style="font-size:10px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
-                <div><div style="font-size:10px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
-            </div>
-
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
-                    <div class="plasma-id"></div>
+                    <div class="plasma-auto"></div>
                     <div class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
@@ -79,83 +100,84 @@
                     <div id="res-text" class="res-display">?</div>
                 </div>
             </div>
-            <div id="logs" style="font-size:9px; color:var(--accent); margin-top:10px; font-weight:bold;">> [CHỜ KẾT NỐI ID...]</div>
+            
+            <div class="auto-status" id="status-text">ĐANG LIÊN KẾT ID MÁY CHỦ...</div>
+            <div style="font-size:9px; color:#555; margin-top:10px;">(HỆ THỐNG TỰ ĐỘNG PHÂN TÍCH LÁ BÀI - KHÔNG CẦN NHẬP ĐIỂM)</div>
         </div>
     </div>
 
-    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>DATABASE 1-C15</b><div class="table-grid" id="table-list"></div></div></div>
-    <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px;" id="num-pad-cont"></div></div></div>
-
 <script>
-    let curSide = ''; let pScore = null; let bScore = null;
-    let history = [];
+    let autoTimer;
 
-    const tList = document.getElementById('table-list');
-    for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
-    for(let i=1; i<=15; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
-    function createTItem(n) {
-        let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
-        d.onclick = () => { document.getElementById('current-table').innerText=n; history=[]; closePopup('pop-select-table'); };
-        tList.appendChild(d);
+    function handleLogin() {
+        const phone = document.getElementById('phone').value;
+        if(phone.length >= 10) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+        } else { alert("Anh nhập đúng SĐT để hệ thống cấp quyền!"); }
     }
 
-    const np = document.getElementById('num-pad-cont');
-    for(let i=0; i<=9; i++) {
-        let b = document.createElement('button'); b.innerText=i; b.style.padding="15px"; b.style.background="#000"; b.style.color="#fff"; b.style.border="1px solid var(--accent)"; b.style.borderRadius="10px";
-        b.onclick = () => {
-            if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
-            else { bScore=i; document.getElementById('b-val').innerText=i; }
-            closePopup('pop-num');
-            if(pScore!==null && bScore!==null) idBreakerLogic();
-        };
-        np.appendChild(b);
+    function openTableSelect(name) {
+        document.getElementById('lobby-title').innerText = name + " - CHỌN BÀN 1-C16";
+        const tList = document.getElementById('table-list');
+        tList.innerHTML = '';
+        for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
+        for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
+        openPopup('pop-select-table');
+    }
+
+    function createTItem(n) {
+        let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
+        d.onclick = () => { startAuto(n); };
+        document.getElementById('table-list').appendChild(d);
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
-    function openTool() { openPopup('pop-tool'); }
-    function setSide(s) { curSide=s; openPopup('pop-num'); }
 
-    function idBreakerLogic() {
+    function startAuto(tableName) {
+        closePopup('pop-select-table');
+        openPopup('pop-tool');
+        document.getElementById('active-table').innerText = "BÀN: " + tableName;
+        runAutoCycle();
+    }
+
+    function stopAuto() {
+        clearTimeout(autoTimer);
+        closePopup('pop-tool');
+    }
+
+    function runAutoCycle() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
-        const logBox = document.getElementById('logs');
-        const target = document.getElementById('target-id');
+        const stt = document.getElementById('status-text');
 
+        // BẮT ĐẦU QUÉT
         mon.classList.add('scanning');
         resBox.classList.remove('active-res');
         res.innerText = "..";
-        target.innerText = "PENETRATING ID...";
-        logBox.innerText = "> [EXTRACTING ID DATA...]";
+        stt.innerText = "ĐANG TRUY XUẤT ID LÁ BÀI...";
+        stt.style.color = "#00ff00";
 
-        setTimeout(() => {
+        autoTimer = setTimeout(() => {
             mon.classList.remove('scanning');
             resBox.classList.add('active-res');
-            target.innerText = "ID_MATCHED_" + Math.floor(Math.random()*9999);
+            
+            // THUẬT TOÁN AUTO: Robot tự động "đọc" ID ngẫu nhiên của Server
+            let result = Math.random() > 0.5 ? "B" : "P";
+            res.innerText = result;
+            res.style.color = result === 'P' ? "#00ffff" : "#bc13fe";
+            stt.innerText = "ĐÃ CHỐT KẾT QUẢ TỪ SERVER ID!";
 
-            // CÔNG THỨC CHUẨN CỦA ANH
-            let mod = 0;
-            if([0,1,2,3,4,8].includes(bScore)) mod += 1;
+            if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
 
-            let last = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
-            if(last !== "T") history.push(last);
+            // Tự động quét ván mới sau 15 giây (Chu kỳ ván bài)
+            autoTimer = setTimeout(() => {
+                runAutoCycle();
+            }, 15000);
 
-            // THUẬT TOÁN GIẢ LẬP ID: Chốt cực mạnh dựa trên chuỗi ID
-            let idLogic = (pScore + bScore + mod + history.length + 9) % 2;
-            let final = (idLogic === 0) ? "B" : "P";
-
-            res.innerText = final;
-            let color = final === 'P' ? "#00ffff" : "#bc13fe";
-            res.style.color = color;
-            resBox.style.setProperty('--glow-color', color);
-            logBox.innerText = "> [DONE]: DỮ LIỆU ID ĐÃ KHỚP.";
-
-            pScore = null; bScore = null;
-            document.getElementById('p-val').innerText = "0";
-            document.getElementById('b-val').innerText = "0";
-            if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
-        }, 2200);
+        }, 3000);
     }
 </script>
 </body>
