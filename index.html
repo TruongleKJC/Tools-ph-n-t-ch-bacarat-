@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - 20s TURBO</title>
+    <title>KJC ROBOT AI - 5s SERVER ID</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
@@ -14,7 +14,7 @@
 
         /* ĐĂNG NHẬP */
         #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { width: 100%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
+        .login-box { width: 100%; max-width: 300px; text-align: center; border: 1px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
         .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
         .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; }
 
@@ -22,54 +22,52 @@
         #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; }
         .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 11px; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #222; background-size: cover; background-position: center; }
+        .card { border-radius: 12px; height: 120px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; opacity: 0.8; }
 
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
+        .popup { width: 94%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 25px var(--accent); }
         
-        /* ROBOT & TIA SÉT */
-        .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 140px; }
-        .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotIdle 1s infinite alternate; }
-        .robot-img.hacking { animation: robotFlash 0.2s infinite; }
+        /* ĐIỂM SỐ NHẬP TAY */
+        .score-row { display: flex; justify-content: space-around; margin-bottom: 15px; }
+        .score-box { width: 70px; height: 70px; background: #111; border: 2px solid #444; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--accent); cursor: pointer; transition: 0.3s; }
+        .score-box:active { transform: scale(0.9); border-color: #fff; }
 
-        .plasma-bolt { position: absolute; left: 80px; top: 50%; width: 0; height: 10px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
-        .scanning .plasma-bolt { width: 80px; opacity: 1; animation: boltTurbo 0.04s infinite; }
+        /* ROBOT & TIA SÉT */
+        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 130px; }
+        .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotPulse 1s infinite alternate; }
+        .plasma-bolt { position: absolute; left: 85px; top: 50%; width: 0; height: 10px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 20px #fff, 0 0 40px #00ffff, 0 0 60px var(--accent); }
+        .scanning .plasma-bolt { width: 85px; opacity: 1; animation: boltFast 0.03s infinite; }
 
         /* KẾT QUẢ */
         .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4.5rem; font-weight: 900; color: #1a1a1a; z-index: 10; }
-        .glow-circle { position: absolute; inset: 0; border: 6px solid transparent; border-radius: 50%; opacity: 0; }
-        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateTurbo 0.3s linear infinite; }
+        .res-display { font-size: 4.5rem; font-weight: 900; color: #111; z-index: 10; }
+        .active-res .glow-circle { opacity: 1; border: 6px solid var(--accent); border-top-color: #00ffff; border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.2s linear infinite; }
 
-        /* TIMER 20 GIÂY */
-        .timer-cont { width: 100%; height: 8px; background: #111; margin-top: 15px; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
-        .timer-fill { height: 100%; width: 0%; background: #444; transition: width linear; }
-        .timer-fill.active { background: linear-gradient(90deg, var(--accent), #00ffff); box-shadow: 0 0 15px var(--accent); }
+        @keyframes robotPulse { from { transform: translateY(0); } to { transform: translateY(-10px) scale(1.05); } }
+        @keyframes boltFast { 0% { clip-path: polygon(0% 50%, 20% 0%, 50% 100%, 80% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 30% 100%, 60% 0%, 90% 100%, 100% 50%); } }
+        @keyframes rotateFast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes robotIdle { from { transform: scale(1); } to { transform: scale(1.05); } }
-        @keyframes robotFlash { 0% { filter: brightness(1); } 100% { filter: brightness(2) drop-shadow(0 0 10px var(--accent)); } }
-        @keyframes boltTurbo { 0% { clip-path: inset(0 50% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
-        @keyframes rotateTurbo { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
+        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+        .num-btn { padding: 15px 0; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; }
         .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
-        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; text-align: center; }
+        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color:var(--accent);">KJC TURBO</h2>
+            <h2 style="color:var(--accent);">KJC SERVER ID</h2>
             <input type="tel" id="phone" placeholder="SĐT đăng nhập">
-            <button onclick="handleLogin()">BẮT ĐẦU PHÂN TÍCH</button>
+            <button onclick="handleLogin()">XÂM NHẬP HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>MODE: <b style="color:var(--accent)">TURBO_20S</b></span>
-            <span>ID: <b id="data-id" style="color:#00ff00">ONLINE</b></span>
+            <span>SERVER: <b style="color:var(--accent)">REALTIME_PENETRATE</b></span>
+            <span>STATUS: <b id="stt-main" style="color:#00ff00">STABLE</b></span>
         </div>
         <div class="lobby">
             <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
@@ -79,22 +77,20 @@
         </div>
     </div>
 
-    <div id="pop-select-table" class="overlay">
-        <div class="popup">
-            <b>CHỌN BÀN (1-C16)</b>
-            <div class="table-grid" id="table-list"></div>
-        </div>
-    </div>
-
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopTurbo()">×</span>
-            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:5px;">BÀN: --</div>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
+            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:10px;">BÀN: --</div>
             
+            <div class="score-row">
+                <div><div style="font-size:10px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
+                <div><div style="font-size:10px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
+            </div>
+
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
                     <div class="plasma-bolt"></div>
-                    <div id="robot-img" class="robot-img"></div>
+                    <div class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
                     <div class="glow-circle"></div>
@@ -102,115 +98,90 @@
                 </div>
             </div>
             
-            <div id="status-text" style="font-size:11px; color:#aaa; margin-top:10px; font-weight:bold;">ĐANG ĐỢI DEALER...</div>
-            <div class="timer-cont"><div id="timer-fill" class="timer-fill"></div></div>
-            <div style="font-size:9px; color:#444; margin-top:5px;">Chu kỳ siêu tốc 20 giây / ván</div>
+            <div id="log-text" style="font-size:11px; color:#00ff00; margin-top:10px; font-weight:bold;">SẴN SÀNG NHẬP ĐIỂM...</div>
+            <div style="font-size:8px; color:#444; margin-top:5px;">PHÂN TÍCH SERVER THỜI GIAN THỰC (5S)</div>
         </div>
     </div>
 
+    <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div class="num-grid" id="num-pad"></div></div></div>
+    <div id="pop-select-table" class="overlay"><div class="popup"><b>CHỌN BÀN 1-C16</b><div class="table-grid" id="table-list"></div></div></div>
+
 <script>
-    let turboTimer;
+    let curSide = ''; let pScore = null; let bScore = null;
+    let history = [];
 
     function handleLogin() {
         if(document.getElementById('phone').value.length >= 10) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-        } else { alert("Anh vui lòng nhập SĐT!"); }
+        } else { alert("Nhập SĐT!"); }
     }
 
-    function openTableSelect(name) {
-        const tList = document.getElementById('table-list');
-        tList.innerHTML = '';
-        for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
-        for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
-        openPopup('pop-select-table');
+    const np = document.getElementById('num-pad');
+    for(let i=0; i<=9; i++) {
+        let b = document.createElement('button'); b.innerText=i; b.className='num-btn';
+        b.onclick = () => {
+            if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
+            else { bScore=i; document.getElementById('b-val').innerText=i; }
+            closePopup('pop-num');
+            if(pScore!==null && bScore!==null) run5sHack();
+        };
+        np.appendChild(b);
     }
 
+    const tList = document.getElementById('table-list');
+    for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
+    for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
     function createTItem(n) {
         let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
-        d.onclick = () => { startTurbo(n); };
-        document.getElementById('table-list').appendChild(d);
+        d.onclick = () => { document.getElementById('active-table').innerText="BÀN: "+n; history=[]; closePopup('pop-select-table'); openPopup('pop-tool'); };
+        tList.appendChild(d);
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
+    function openTableSelect() { openPopup('pop-select-table'); }
+    function setSide(s) { curSide=s; openPopup('pop-num'); }
 
-    function startTurbo(tableName) {
-        closePopup('pop-select-table');
-        openPopup('pop-tool');
-        document.getElementById('active-table').innerText = "BÀN: " + tableName;
-        runTurboCycle();
-    }
-
-    function stopTurbo() {
-        clearTimeout(turboTimer);
-        closePopup('pop-tool');
-    }
-
-    function runTurboCycle() {
+    function run5sHack() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
-        const rob = document.getElementById('robot-img');
-        const stt = document.getElementById('status-text');
-        const fill = document.getElementById('timer-fill');
+        const log = document.getElementById('log-text');
 
-        // GIAI ĐOẠN 1: QUÉT NHANH DEALER (10 GIÂY)
-        mon.classList.remove('scanning');
+        mon.classList.add('scanning');
         resBox.classList.remove('active-res');
-        rob.classList.remove('hacking');
-        res.innerText = "?";
-        res.style.color = "#1a1a1a";
-        stt.innerText = "ĐANG QUÉT BÀI DEALER (10s)...";
-        stt.style.color = "#aaa";
-        
-        fill.style.transition = 'none';
-        fill.style.width = '0%';
-        fill.classList.remove('active');
+        res.innerText = "..";
+        res.style.color = "#111";
+        log.innerText = "> ĐANG XÂM NHẬP SERVER ID...";
+        log.style.color = "red";
 
+        // CHẠY PHÂN TÍCH SERVER TRONG 5 GIÂY
         setTimeout(() => {
-            fill.style.transition = 'width 10s linear';
-            fill.style.width = '100%';
-        }, 100);
-
-        turboTimer = setTimeout(() => {
-            // GIAI ĐOẠN 2: BẺ KHÓA SIÊU TỐC (10 GIÂY)
-            mon.classList.add('scanning');
-            rob.classList.add('hacking');
-            stt.innerText = "BẺ KHÓA ID MÁY CHỦ (10s)...";
-            stt.style.color = "#00ffff";
+            mon.classList.remove('scanning');
+            resBox.classList.add('active-res');
             
-            fill.style.transition = 'none';
-            fill.style.width = '0%';
-            fill.classList.add('active');
+            // Công thức chuẩn của anh
+            let mod = 0;
+            if([0,1,2,3,4,8].includes(bScore)) mod += 1;
+            let last = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
+            if(last !== "T") history.push(last);
 
-            setTimeout(() => {
-                fill.style.transition = 'width 10s linear';
-                fill.style.width = '100%';
-            }, 100);
+            let logic = (pScore + bScore + mod + history.length + 7) % 2;
+            let final = (logic === 0) ? "B" : "P";
 
-            turboTimer = setTimeout(() => {
-                // HIỆN KẾT QUẢ
-                mon.classList.remove('scanning');
-                resBox.classList.add('active-res');
-                
-                let result = Math.random() > 0.5 ? "B" : "P";
-                res.innerText = result;
-                res.style.color = result === 'P' ? "#00ffff" : "#bc13fe";
-                stt.innerText = "DỮ LIỆU ĐÃ KHỚP! CHỐT: " + result;
-                document.getElementById('data-id').innerText = "TURBO_" + Math.floor(Math.random()*999);
+            res.innerText = final;
+            let color = final === 'P' ? "#00ffff" : "#bc13fe";
+            res.style.color = color;
+            log.innerText = "> SERVER MATCHED! CHỐT: " + final;
+            log.style.color = "#00ff00";
 
-                if(navigator.vibrate) navigator.vibrate([500, 100, 500]);
-
-                // Nghỉ 5 giây chuẩn bị ván mới
-                turboTimer = setTimeout(() => {
-                    runTurboCycle();
-                }, 5000);
-
-            }, 10000);
-        }, 10000);
+            pScore = null; bScore = null;
+            document.getElementById('p-val').innerText = "0";
+            document.getElementById('b-val').innerText = "0";
+            if(navigator.vibrate) navigator.vibrate([500]);
+        }, 5000);
     }
 </script>
 </body>
-        </html>
-        
+</html>
