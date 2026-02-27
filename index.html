@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - DARK NEURAL 2026</title>
+    <title>KJC AI - SERVER BREAKER</title>
     <style>
         :root {
             --img-dg: url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg');
@@ -11,67 +11,63 @@
             --img-wm: url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg');
             --img-sa: url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg');
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
-            --accent: #bc13fe; /* Tím Neon quyền lực */
+            --accent: #bc13fe; 
         }
 
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        #main-app { height: 100vh; display: flex; flex-direction: column; }
-        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent); }
+        /* GIAO DIỆN CHÍNH GIỮ NGUYÊN */
+        #main-app { height: 100vh; display: flex; flex-direction: column; background: #050505; }
+        .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid var(--accent); font-size: 11px; }
         
-        .lobby { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 120px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-weight: bold; background-size: cover; border: 1px solid #333; transition: 0.3s; }
-        .card:active { transform: scale(0.95); border-color: var(--accent); }
+        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; height: calc(100vh - 50px); overflow-y: auto; }
+        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; background-size: cover; border: 1px solid #222; }
 
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 92%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 25px; padding: 15px; text-align: center; position: relative; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
+        .popup { width: 90%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
         
-        /* ROBOT VÀ TIA SÉT MỚI */
-        .monitor-area { margin-top: 5px; display: flex; align-items: center; justify-content: center; position: relative; height: 130px; gap: 10px; }
-        .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotUltra 2s infinite; }
-        
-        .lightning-plasma {
-            position: absolute; left: 80px; top: 50%; width: 0; height: 8px;
+        /* ROBOT VÀ TIA SÉT PLASMA TÍM */
+        .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 120px; gap: 15px; }
+        .robot-wrapper { position: relative; width: 85px; height: 85px; z-index: 10; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotExtreme 1.5s ease-in-out infinite; }
+
+        .plasma-bolt {
+            position: absolute; left: 75px; top: 50%; width: 0; height: 6px;
             background: #fff; opacity: 0; z-index: 5;
-            box-shadow: 0 0 15px #fff, 0 0 25px #bc13fe, 0 0 45px #00ffff;
-            filter: blur(0.5px);
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--accent), 0 0 40px #bc13fe;
         }
-        .scanning .lightning-plasma { width: 75px; opacity: 1; animation: boltExtreme 0.1s infinite alternate; }
+        .scanning .plasma-bolt { width: 75px; opacity: 1; animation: plasmaStrike 0.1s infinite alternate; }
 
-        /* CHỮ P/B VÒNG XOAY 360 */
-        .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4rem; font-weight: 900; color: #111; z-index: 10; }
-        .glow-spinner {
+        /* KẾT QUẢ VỚI VÒNG XOAY GLOW */
+        .res-container { position: relative; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .res-display { font-size: 3.8rem; font-weight: 900; color: #111; z-index: 10; }
+        .glow-halo {
             position: absolute; inset: 0; border: 4px solid transparent; border-radius: 50%;
             opacity: 0; transition: 0.5s;
         }
-        .active-res .glow-spinner {
-            opacity: 1; border-top-color: var(--glow-color); border-bottom-color: #00ffff;
-            animation: rotate360 0.5s linear infinite;
+        .active-res .glow-halo {
+            opacity: 1; border-top-color: var(--accent); border-right-color: #00ffff;
+            animation: rotateHalo 0.5s linear infinite;
         }
 
-        .score-box { width: 70px; height: 70px; background: #000; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; border-radius: 15px; color: var(--accent); cursor: pointer; }
-        .score-box.active { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); color: #fff; }
+        .score-box { width: 65px; height: 65px; background: #111; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 12px; color: var(--accent); cursor: pointer; }
 
-        @keyframes robotUltra { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) scale(1.1) rotate(5deg); } }
-        @keyframes boltExtreme { 
-            0% { clip-path: polygon(0% 50%, 25% 0%, 50% 100%, 75% 0%, 100% 50%); } 
-            100% { clip-path: polygon(0% 50%, 15% 100%, 45% 0%, 85% 100%, 100% 50%); } 
-        }
-        @keyframes rotate360 { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes robotExtreme { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.05); } }
+        @keyframes plasmaStrike { 0% { clip-path: polygon(0% 50%, 20% 0%, 80% 100%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 20% 100%, 80% 0%, 100% 50%); } }
+        @keyframes rotateHalo { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
-        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; color: #fff; text-align: center; }
+        /* BÀN 1-C15 GIỮ NGUYÊN */
+        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 200px; overflow-y: auto; }
+        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; color: #fff; }
     </style>
 </head>
 <body>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>CORE: <b style="color:var(--accent)">DARK NEURAL 2026</b></span>
-            <span>STATUS: <b style="color:#00ff00">ONLINE</b></span>
+            <span>MODE: <b style="color:var(--accent)">SERVER PENETRATOR</b></span>
+            <span>BÀN: <b style="color:yellow">1-C15</b></span>
         </div>
         <div class="lobby">
             <div class="card" onclick="openTool()" style="background-image: var(--img-dg);"><span>DREAM</span></div>
@@ -83,8 +79,8 @@
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer; font-size:25px;" onclick="closePopup('pop-tool')">×</span>
-            <button style="background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 10px; border-radius:5px; margin-bottom:10px;" id="current-table" onclick="openPopup('pop-select-table')">BÀN 1 - C15</button>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
+            <button style="background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:5px; margin-bottom:10px;" id="current-table" onclick="openPopup('pop-select-table')">CHỌN BÀN</button>
             
             <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
                 <div><div style="font-size:10px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
@@ -93,24 +89,24 @@
 
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
-                    <div class="lightning-plasma"></div>
+                    <div class="plasma-bolt"></div>
                     <div class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
-                    <div class="glow-spinner"></div>
+                    <div class="glow-halo"></div>
                     <div id="res-text" class="res-display">?</div>
                 </div>
             </div>
-            <div id="logs" style="font-size:9px; color:var(--accent); margin-top:10px; font-weight:bold;">> Đang chờ nhập dữ liệu...</div>
+            <div id="logs" style="font-size:9px; color:var(--accent); margin-top:10px;">> [BẺ KHÓA]: ĐANG XÂM NHẬP SERVER...</div>
         </div>
     </div>
 
-    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>CHỌN BÀN CHỐT</b><div class="table-grid" id="table-list"></div></div></div>
+    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>DATABASE BÀN 1-C15</b><div class="table-grid" id="table-list"></div></div></div>
     <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div style="display:grid; grid-template-columns: repeat(5,1fr); gap:8px;" id="num-pad-cont"></div></div></div>
 
 <script>
     let curSide = ''; let pScore = null; let bScore = null;
-    let history = []; let gãyCount = 0;
+    let history = [];
 
     const tList = document.getElementById('table-list');
     for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
@@ -125,10 +121,10 @@
     for(let i=0; i<=9; i++) {
         let b = document.createElement('button'); b.innerText=i; b.style.padding="15px"; b.style.background="#1a1a1a"; b.style.color="#fff"; b.style.border="1px solid #333"; b.style.borderRadius="10px";
         b.onclick = () => {
-            if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; document.getElementById('p-val').classList.add('active'); }
-            else { bScore=i; document.getElementById('b-val').innerText=i; document.getElementById('b-val').classList.add('active'); }
+            if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
+            else { bScore=i; document.getElementById('b-val').innerText=i; }
             closePopup('pop-num');
-            if(pScore!==null && bScore!==null) runDarkNeural();
+            if(pScore!==null && bScore!==null) hackLogic();
         };
         np.appendChild(b);
     }
@@ -138,7 +134,7 @@
     function openTool() { openPopup('pop-tool'); }
     function setSide(s) { curSide=s; openPopup('pop-num'); }
 
-    function runDarkNeural() {
+    function hackLogic() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
@@ -147,47 +143,35 @@
         mon.classList.add('scanning');
         resBox.classList.remove('active-res');
         res.innerText = "..";
-        logBox.innerText = "> DARK NEURAL: Đang phá thuật toán sảnh...";
+        logBox.innerText = "> INJECTING EXPLOIT TO SERVER...";
 
         setTimeout(() => {
             mon.classList.remove('scanning');
             resBox.classList.add('active-res');
 
-            // Công thức chuẩn của anh: Banker 012348 + 1
+            // Công thức chuẩn của anh
             let mod = 0;
             if([0,1,2,3,4,8].includes(bScore)) mod += 1;
 
-            let winVal = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
-            if(winVal !== "T") history.push(winVal);
+            let last = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
+            if(last !== "T") history.push(last);
 
-            // BỘ NÃO DARK NEURAL: Kiểm tra gãy để đổi thuật toán
-            let final = "";
-            let logic = (pScore + bScore + mod + history.length + 13) % 2;
-            
-            // Nếu phát hiện cầu bệt hoặc cầu nhảy dài
-            if(history.length >= 4 && history.slice(-3).every(v => v === history[history.length-1])) {
-                final = history[history.length-1]; // Bám bệt tuyệt đối
-                logBox.innerText = "!! PHÁT HIỆN CẦU BỆT - CHỐT MẠNH !!";
-            } else {
-                final = (logic === 0) ? "B" : "P";
-                logBox.innerText = "> ĐÃ CHỐT THEO LUỒNG NEURAL.";
-            }
+            // Thuật toán Server Breaker (Mô phỏng hack server)
+            let hackCode = (pScore + bScore + mod + history.length + 8) % 2;
+            let final = (hackCode === 0) ? "B" : "P";
 
             res.innerText = final;
             let color = final === 'P' ? "#0055ff" : "#bc13fe";
             res.style.color = color;
             resBox.style.setProperty('--glow-color', color);
-            res.style.textShadow = `0 0 30px ${color}`;
+            logBox.innerText = "> [SUCCESS]: DỮ LIỆU ĐÃ ĐƯỢC GIẢI MÃ.";
 
             pScore = null; bScore = null;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
-            document.getElementById('p-val').classList.remove('active');
-            document.getElementById('b-val').classList.remove('active');
-            if(navigator.vibrate) navigator.vibrate([700, 150, 700]);
+            if(navigator.vibrate) navigator.vibrate([100, 50, 500]);
         }, 2200);
     }
 </script>
 </body>
-        </html>
-        
+</html>
