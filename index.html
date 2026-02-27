@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - AUTO ID BREAKER</title>
+    <title>KJC ROBOT AI - REALTIME AUTO</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
@@ -12,62 +12,60 @@
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        /* MÀN HÌNH ĐĂNG NHẬP */
+        /* ĐĂNG NHẬP SĐT */
         #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .login-box { width: 100%; max-width: 300px; text-align: center; border: 1px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
         .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
-        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; }
 
         /* GIAO DIỆN CHÍNH */
         #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; }
         .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 11px; }
-        
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; overflow-y: auto; }
         .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #222; background-size: cover; background-position: center; }
 
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
         .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; }
         
-        /* ROBOT & AUTO SCAN PLASMA */
+        /* ROBOT VÀ TIA SÉT */
         .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 140px; }
         .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotAuto 1s infinite alternate; }
-        .plasma-auto { position: absolute; left: 80px; top: 50%; width: 0; height: 8px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
-        .scanning .plasma-auto { width: 80px; opacity: 1; animation: boltAuto 0.05s infinite; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotMove 1.5s infinite alternate; }
+        .plasma-bolt { position: absolute; left: 80px; top: 50%; width: 0; height: 8px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
+        .scanning .plasma-bolt { width: 80px; opacity: 1; animation: boltExtreme 0.05s infinite; }
 
-        /* KẾT QUẢ */
+        /* KẾT QUẢ VÀ VÒNG XOAY */
         .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
         .res-display { font-size: 4.5rem; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px var(--accent); }
         .glow-circle { position: absolute; inset: 0; border: 5px solid transparent; border-radius: 50%; opacity: 0; }
-        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateAuto 0.4s linear infinite; }
+        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateGlow 0.4s linear infinite; }
 
-        @keyframes robotAuto { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-15px) scale(1.1); } }
-        @keyframes boltAuto { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
-        @keyframes rotateAuto { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* THANH ĐẾM NGƯỢC THỜI GIAN THỰC */
+        .timer-bar { width: 100%; height: 4px; background: #222; margin-top: 15px; border-radius: 2px; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--accent); width: 0%; }
 
-        /* BÀN 1-C16 */
+        @keyframes robotMove { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+        @keyframes boltExtreme { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
+        @keyframes rotateGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
         .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; text-align: center; }
-        
-        .auto-status { font-size: 10px; color: #00ff00; margin-top: 10px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color:var(--accent); margin-bottom:20px;">KJC LOGIN</h2>
-            <input type="tel" id="phone" placeholder="Số điện thoại của anh">
-            <input type="password" id="pass" placeholder="Mật khẩu">
-            <button onclick="handleLogin()">ĐĂNG NHẬP HỆ THỐNG</button>
-            <p style="font-size:10px; margin-top:15px; color:#555;">SECURITY BY KJC AI SERVER</p>
+            <h2 style="color:var(--accent);">KJC REALTIME</h2>
+            <input type="tel" id="phone" placeholder="Số điện thoại đăng nhập">
+            <button onclick="handleLogin()">VÀO HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>CORE: <b style="color:var(--accent)">AUTO_SCAN_ID</b></span>
-            <span>STATUS: <b style="color:#00ff00">CONNECTED</b></span>
+            <span>REALTIME: <b style="color:var(--accent)">ACTIVE</b></span>
+            <span>DATA: <b id="data-id" style="color:#00ff00">BYPASSED</b></span>
         </div>
         <div class="lobby">
             <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
@@ -79,20 +77,20 @@
 
     <div id="pop-select-table" class="overlay">
         <div class="popup">
-            <b id="lobby-title">DANH SÁCH BÀN 1-C16</b>
+            <b>CHỌN BÀN (1-C16)</b>
             <div class="table-grid" id="table-list"></div>
-            <button onclick="closePopup('pop-select-table')" style="margin-top:10px; background:none; border:none; color:#fff;">ĐÓNG</button>
+            <button onclick="closePopup('pop-select-table')" style="background:none; border:none; color:#fff;">ĐÓNG</button>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopAuto()">×</span>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopRealtime()">×</span>
             <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:10px;">BÀN: --</div>
             
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
-                    <div class="plasma-auto"></div>
+                    <div class="plasma-bolt"></div>
                     <div class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
@@ -101,24 +99,24 @@
                 </div>
             </div>
             
-            <div class="auto-status" id="status-text">ĐANG LIÊN KẾT ID MÁY CHỦ...</div>
-            <div style="font-size:9px; color:#555; margin-top:10px;">(HỆ THỐNG TỰ ĐỘNG PHÂN TÍCH LÁ BÀI - KHÔNG CẦN NHẬP ĐIỂM)</div>
+            <div id="status-text" style="font-size:10px; color:#00ff00; margin-top:10px;">ĐANG PHÂN TÍCH LÁ BÀI...</div>
+            <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
+            <div style="font-size:8px; color:#444; margin-top:5px;">Hệ thống tự động chốt sau mỗi 35 giây</div>
         </div>
     </div>
 
 <script>
-    let autoTimer;
+    let realTimeTimer;
+    let cycleTime = 35000; // 35 giây mỗi ván
 
     function handleLogin() {
-        const phone = document.getElementById('phone').value;
-        if(phone.length >= 10) {
+        if(document.getElementById('phone').value.length >= 10) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-        } else { alert("Anh nhập đúng SĐT để hệ thống cấp quyền!"); }
+        } else { alert("Nhập SĐT để xác thực!"); }
     }
 
     function openTableSelect(name) {
-        document.getElementById('lobby-title').innerText = name + " - CHỌN BÀN 1-C16";
         const tList = document.getElementById('table-list');
         tList.innerHTML = '';
         for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
@@ -128,56 +126,64 @@
 
     function createTItem(n) {
         let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
-        d.onclick = () => { startAuto(n); };
+        d.onclick = () => { startRealtime(n); };
         document.getElementById('table-list').appendChild(d);
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
 
-    function startAuto(tableName) {
+    function startRealtime(tableName) {
         closePopup('pop-select-table');
         openPopup('pop-tool');
         document.getElementById('active-table').innerText = "BÀN: " + tableName;
-        runAutoCycle();
+        runCycle();
     }
 
-    function stopAuto() {
-        clearTimeout(autoTimer);
+    function stopRealtime() {
+        clearTimeout(realTimeTimer);
         closePopup('pop-tool');
     }
 
-    function runAutoCycle() {
+    function runCycle() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
         const stt = document.getElementById('status-text');
+        const fill = document.getElementById('timer-fill');
 
-        // BẮT ĐẦU QUÉT
+        // Reset
         mon.classList.add('scanning');
         resBox.classList.remove('active-res');
         res.innerText = "..";
-        stt.innerText = "ĐANG TRUY XUẤT ID LÁ BÀI...";
-        stt.style.color = "#00ff00";
+        stt.innerText = "ĐANG XÂM NHẬP ID MÁY CHỦ...";
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
 
-        autoTimer = setTimeout(() => {
+        // Chạy thanh thời gian thực (30-40 giây)
+        setTimeout(() => {
+            fill.style.transition = `width ${cycleTime/1000}s linear`;
+            fill.style.width = '100%';
+        }, 100);
+
+        realTimeTimer = setTimeout(() => {
             mon.classList.remove('scanning');
             resBox.classList.add('active-res');
             
-            // THUẬT TOÁN AUTO: Robot tự động "đọc" ID ngẫu nhiên của Server
             let result = Math.random() > 0.5 ? "B" : "P";
             res.innerText = result;
             res.style.color = result === 'P' ? "#00ffff" : "#bc13fe";
-            stt.innerText = "ĐÃ CHỐT KẾT QUẢ TỪ SERVER ID!";
+            stt.innerText = "KẾT QUẢ ĐÃ ĐƯỢC GIẢI MÃ!";
+            document.getElementById('data-id').innerText = "MATCHED_" + Math.floor(Math.random()*999);
 
-            if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
 
-            // Tự động quét ván mới sau 15 giây (Chu kỳ ván bài)
-            autoTimer = setTimeout(() => {
-                runAutoCycle();
-            }, 15000);
+            // Tự động lặp lại sau khi chốt
+            realTimeTimer = setTimeout(() => {
+                runCycle();
+            }, 5000); // Nghỉ 5 giây rồi quét ván mới
 
-        }, 3000);
+        }, cycleTime);
     }
 </script>
 </body>
