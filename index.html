@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - REALTIME AUTO</title>
+    <title>KJC ROBOT AI - DEALER SYNC</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
@@ -12,7 +12,7 @@
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        /* ĐĂNG NHẬP SĐT */
+        /* ĐĂNG NHẬP */
         #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .login-box { width: 100%; max-width: 300px; text-align: center; border: 1px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
         .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
@@ -30,21 +30,25 @@
         /* ROBOT VÀ TIA SÉT */
         .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 140px; }
         .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotMove 1.5s infinite alternate; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotIdle 2s infinite ease-in-out; }
+        .robot-img.active { animation: robotHack 0.5s infinite alternate; }
+
         .plasma-bolt { position: absolute; left: 80px; top: 50%; width: 0; height: 8px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
         .scanning .plasma-bolt { width: 80px; opacity: 1; animation: boltExtreme 0.05s infinite; }
 
-        /* KẾT QUẢ VÀ VÒNG XOAY */
+        /* KẾT QUẢ */
         .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4.5rem; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px var(--accent); }
+        .res-display { font-size: 4.5rem; font-weight: 900; color: #222; z-index: 10; transition: 0.3s; }
         .glow-circle { position: absolute; inset: 0; border: 5px solid transparent; border-radius: 50%; opacity: 0; }
         .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateGlow 0.4s linear infinite; }
 
-        /* THANH ĐẾM NGƯỢC THỜI GIAN THỰC */
-        .timer-bar { width: 100%; height: 4px; background: #222; margin-top: 15px; border-radius: 2px; overflow: hidden; }
-        .timer-fill { height: 100%; background: var(--accent); width: 0%; }
+        /* THANH ĐẾM NGƯỢC HAI GIAI ĐOẠN */
+        .timer-container { width: 100%; height: 6px; background: #222; margin-top: 15px; border-radius: 3px; position: relative; overflow: hidden; }
+        .timer-fill { height: 100%; width: 0%; background: #555; transition: width linear; }
+        .timer-fill.hacking { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        @keyframes robotMove { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+        @keyframes robotIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes robotHack { 0% { transform: scale(1); } 100% { transform: scale(1.1) rotate(2deg); } }
         @keyframes boltExtreme { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
         @keyframes rotateGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -56,16 +60,16 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color:var(--accent);">KJC REALTIME</h2>
-            <input type="tel" id="phone" placeholder="Số điện thoại đăng nhập">
-            <button onclick="handleLogin()">VÀO HỆ THỐNG</button>
+            <h2 style="color:var(--accent);">KJC SYNC</h2>
+            <input type="tel" id="phone" placeholder="SĐT đăng nhập">
+            <button onclick="handleLogin()">KÍCH HOẠT HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>REALTIME: <b style="color:var(--accent)">ACTIVE</b></span>
-            <span>DATA: <b id="data-id" style="color:#00ff00">BYPASSED</b></span>
+            <span>SYNC: <b style="color:var(--accent)">DEALER_MODE</b></span>
+            <span>ID: <b id="data-id" style="color:#00ff00">WAITING</b></span>
         </div>
         <div class="lobby">
             <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
@@ -77,21 +81,20 @@
 
     <div id="pop-select-table" class="overlay">
         <div class="popup">
-            <b>CHỌN BÀN (1-C16)</b>
+            <b>CHỌN BÀN CHIA BÀI</b>
             <div class="table-grid" id="table-list"></div>
-            <button onclick="closePopup('pop-select-table')" style="background:none; border:none; color:#fff;">ĐÓNG</button>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopRealtime()">×</span>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="stopSync()">×</span>
             <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:10px;">BÀN: --</div>
             
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
                     <div class="plasma-bolt"></div>
-                    <div class="robot-img"></div>
+                    <div id="robot-img" class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
                     <div class="glow-circle"></div>
@@ -99,21 +102,20 @@
                 </div>
             </div>
             
-            <div id="status-text" style="font-size:10px; color:#00ff00; margin-top:10px;">ĐANG PHÂN TÍCH LÁ BÀI...</div>
-            <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
-            <div style="font-size:8px; color:#444; margin-top:5px;">Hệ thống tự động chốt sau mỗi 35 giây</div>
+            <div id="status-text" style="font-size:10px; color:#aaa; margin-top:10px;">ĐỢI DEALER CHIA BÀI...</div>
+            <div class="timer-container"><div id="timer-fill" class="timer-fill"></div></div>
+            <div style="font-size:8px; color:#444; margin-top:5px;">20s Dealer chia | 15s Robot bẻ khóa ID</div>
         </div>
     </div>
 
 <script>
-    let realTimeTimer;
-    let cycleTime = 35000; // 35 giây mỗi ván
+    let syncTimer;
 
     function handleLogin() {
         if(document.getElementById('phone').value.length >= 10) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-        } else { alert("Nhập SĐT để xác thực!"); }
+        } else { alert("Nhập SĐT!"); }
     }
 
     function openTableSelect(name) {
@@ -126,65 +128,90 @@
 
     function createTItem(n) {
         let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
-        d.onclick = () => { startRealtime(n); };
+        d.onclick = () => { startSync(n); };
         document.getElementById('table-list').appendChild(d);
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
 
-    function startRealtime(tableName) {
+    function startSync(tableName) {
         closePopup('pop-select-table');
         openPopup('pop-tool');
         document.getElementById('active-table').innerText = "BÀN: " + tableName;
-        runCycle();
+        runDealerCycle();
     }
 
-    function stopRealtime() {
-        clearTimeout(realTimeTimer);
+    function stopSync() {
+        clearTimeout(syncTimer);
         closePopup('pop-tool');
     }
 
-    function runCycle() {
+    function runDealerCycle() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
+        const rob = document.getElementById('robot-img');
         const stt = document.getElementById('status-text');
         const fill = document.getElementById('timer-fill');
 
-        // Reset
-        mon.classList.add('scanning');
+        // GIAI ĐOẠN 1: ĐỢI DEALER CHIA BÀI (20 GIÂY)
+        mon.classList.remove('scanning');
         resBox.classList.remove('active-res');
-        res.innerText = "..";
-        stt.innerText = "ĐANG XÂM NHẬP ID MÁY CHỦ...";
+        rob.classList.remove('active');
+        res.innerText = "?";
+        res.style.color = "#222";
+        stt.innerText = "DEALER ĐANG CHIA BÀI (20s)...";
+        stt.style.color = "#aaa";
+        
         fill.style.transition = 'none';
         fill.style.width = '0%';
+        fill.classList.remove('hacking');
 
-        // Chạy thanh thời gian thực (30-40 giây)
         setTimeout(() => {
-            fill.style.transition = `width ${cycleTime/1000}s linear`;
+            fill.style.transition = 'width 20s linear';
             fill.style.width = '100%';
         }, 100);
 
-        realTimeTimer = setTimeout(() => {
-            mon.classList.remove('scanning');
-            resBox.classList.add('active-res');
+        syncTimer = setTimeout(() => {
+            // GIAI ĐOẠN 2: ROBOT XÂM NHẬP (15 GIÂY)
+            mon.classList.add('scanning');
+            rob.classList.add('active');
+            stt.innerText = "ĐANG BẺ KHÓA ID LÁ BÀI...";
+            stt.style.color = "#bc13fe";
             
-            let result = Math.random() > 0.5 ? "B" : "P";
-            res.innerText = result;
-            res.style.color = result === 'P' ? "#00ffff" : "#bc13fe";
-            stt.innerText = "KẾT QUẢ ĐÃ ĐƯỢC GIẢI MÃ!";
-            document.getElementById('data-id').innerText = "MATCHED_" + Math.floor(Math.random()*999);
+            fill.style.transition = 'none';
+            fill.style.width = '0%';
+            fill.classList.add('hacking');
 
-            if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
+            setTimeout(() => {
+                fill.style.transition = 'width 15s linear';
+                fill.style.width = '100%';
+            }, 100);
 
-            // Tự động lặp lại sau khi chốt
-            realTimeTimer = setTimeout(() => {
-                runCycle();
-            }, 5000); // Nghỉ 5 giây rồi quét ván mới
+            syncTimer = setTimeout(() => {
+                // CHỐT KẾT QUẢ
+                mon.classList.remove('scanning');
+                resBox.classList.add('active-res');
+                
+                let result = Math.random() > 0.5 ? "B" : "P";
+                res.innerText = result;
+                res.style.color = result === 'P' ? "#00ffff" : "#bc13fe";
+                stt.innerText = "ID MATCHED! CHỐT: " + result;
+                document.getElementById('data-id').innerText = "SECURED_" + Math.floor(Math.random()*999);
 
-        }, cycleTime);
+                if(navigator.vibrate) navigator.vibrate([400, 100, 400]);
+
+                // Nghỉ 5 giây rồi lặp lại chu kỳ mới
+                syncTimer = setTimeout(() => {
+                    runDealerCycle();
+                }, 5000);
+
+            }, 15000);
+
+        }, 20000);
     }
 </script>
 </body>
-</html>
+                </html>
+    
