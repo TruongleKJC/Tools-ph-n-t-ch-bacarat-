@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC AI - GOD MODE 2026</title>
+    <title>KJC AI - ID BREAKER</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
-            --accent: #ff00ff; /* Màu Tím Plasma cực đại */
+            --accent: #bc13fe; 
         }
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        /* GIỮ NGUYÊN GIAO DIỆN CŨ THEO Ý ANH */
-        #main-app { height: 100vh; background: #050505; display: flex; flex-direction: column; }
-        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent); }
+        #main-app { height: 100vh; display: flex; flex-direction: column; background: #050505; border: 1px solid var(--accent); }
+        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; background-size: cover; border: 1px solid #222; opacity: 0.8; }
+        .card { border-radius: 12px; height: 130px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; background-size: cover; border: 1px solid #222; opacity: 0.6; }
         
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2.5px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 25px var(--accent); }
+        .popup { width: 92%; max-width: 310px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 20px var(--accent); }
         
-        /* ROBOT & TIA SÉT SẬP SERVER */
+        /* ROBOT VÀ TIA SÉT XÂM NHẬP ID */
         .monitor-area { margin-top: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 130px; }
         .robot-wrapper { position: relative; width: 85px; height: 85px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotGod 1s infinite alternate; }
-        .lightning-god { position: absolute; left: 75px; top: 50%; width: 0; height: 12px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
-        .scanning .lightning-god { width: 80px; opacity: 1; animation: boltGod 0.05s infinite; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotId 1.5s infinite; }
+        .plasma-id { position: absolute; left: 75px; top: 50%; width: 0; height: 10px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 15px #fff, 0 0 30px #00ffff, 0 0 50px var(--accent); }
+        .scanning .plasma-id { width: 80px; opacity: 1; animation: boltId 0.08s infinite; }
 
-        /* KẾT QUẢ VỚI HIỆU ỨNG XOAY VÔ CỰC */
+        /* KẾT QUẢ VÒNG XOAY GLOW */
         .res-container { position: relative; width: 95px; height: 95px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4rem; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px var(--glow-color); }
+        .res-display { font-size: 4rem; font-weight: 900; color: #fff; z-index: 10; }
         .glow-circle { position: absolute; inset: 0; border: 5px solid transparent; border-radius: 50%; opacity: 0; }
-        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateGod 0.3s linear infinite; }
+        .active-res .glow-circle { opacity: 1; border-top-color: #00ffff; border-bottom-color: var(--accent); animation: rotateId 0.4s linear infinite; }
 
         .score-box { width: 65px; height: 65px; background: #111; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 12px; color: var(--accent); cursor: pointer; }
 
-        @keyframes robotGod { 0% { transform: translateY(0) scale(1) rotate(0); } 100% { transform: translateY(-15px) scale(1.1) rotate(5deg); } }
-        @keyframes boltGod { 0% { clip-path: polygon(0% 50%, 15% 0%, 35% 100%, 65% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 45% 0%, 85% 100%, 100% 50%); } }
-        @keyframes rotateGod { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes robotId { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes boltId { 0% { clip-path: polygon(0% 50%, 15% 0%, 45% 100%, 75% 0%, 100% 50%); } 100% { clip-path: polygon(0% 50%, 25% 100%, 55% 0%, 85% 100%, 100% 50%); } }
+        @keyframes rotateId { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* BÀN 1-C15 GIỮ NGUYÊN */
         .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 200px; overflow-y: auto; }
@@ -49,20 +48,20 @@
 
     <div id="main-app">
         <div class="top-bar">
-            <span>SYS: <b style="color:var(--accent)">GOD_MODE_ON</b></span>
-            <span>DATA: <b id="hack-status" style="color:#00ff00">SECURE</b></span>
+            <span>CORE: <b style="color:var(--accent)">ID_BREAKER_V1</b></span>
+            <span>TARGET: <b id="target-id" style="color:yellow">SCANNING...</b></span>
         </div>
         <div class="lobby">
-            <div class="card" onclick="openTool()">DREAM_SYSTEM</div>
-            <div class="card" onclick="openTool()">SEXY_SYSTEM</div>
-            <div class="card" onclick="openTool()">WM_SYSTEM</div>
-            <div class="card" onclick="openTool()">SA_SYSTEM</div>
+            <div class="card" onclick="openTool()">DREAM</div>
+            <div class="card" onclick="openTool()">SEXY</div>
+            <div class="card" onclick="openTool()">WM</div>
+            <div class="card" onclick="openTool()">SA</div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">[X]</span>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
             <button style="background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:5px; margin-bottom:10px;" id="current-table" onclick="openPopup('pop-select-table')">BÀN 1-C15</button>
             
             <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
@@ -72,7 +71,7 @@
 
             <div class="monitor-area" id="monitor">
                 <div class="robot-wrapper">
-                    <div class="lightning-god"></div>
+                    <div class="plasma-id"></div>
                     <div class="robot-img"></div>
                 </div>
                 <div class="res-container" id="res-box">
@@ -80,11 +79,11 @@
                     <div id="res-text" class="res-display">?</div>
                 </div>
             </div>
-            <div id="logs" style="font-size:10px; color:var(--accent); margin-top:10px; font-weight:bold;">> [WAITING FOR DATA...]</div>
+            <div id="logs" style="font-size:9px; color:var(--accent); margin-top:10px; font-weight:bold;">> [CHỜ KẾT NỐI ID...]</div>
         </div>
     </div>
 
-    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>DATABASE BÀN 1-C15</b><div class="table-grid" id="table-list"></div></div></div>
+    <div id="pop-select-table" class="overlay" style="z-index: 999;"><div class="popup"><b>DATABASE 1-C15</b><div class="table-grid" id="table-list"></div></div></div>
     <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px;" id="num-pad-cont"></div></div></div>
 
 <script>
@@ -107,7 +106,7 @@
             if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
             else { bScore=i; document.getElementById('b-val').innerText=i; }
             closePopup('pop-num');
-            if(pScore!==null && bScore!==null) godModeHack();
+            if(pScore!==null && bScore!==null) idBreakerLogic();
         };
         np.appendChild(b);
     }
@@ -117,48 +116,46 @@
     function openTool() { openPopup('pop-tool'); }
     function setSide(s) { curSide=s; openPopup('pop-num'); }
 
-    function godModeHack() {
+    function idBreakerLogic() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
         const logBox = document.getElementById('logs');
-        const status = document.getElementById('hack-status');
+        const target = document.getElementById('target-id');
 
         mon.classList.add('scanning');
         resBox.classList.remove('active-res');
         res.innerText = "..";
-        status.innerText = "PENETRATING...";
-        status.style.color = "red";
-        logBox.innerText = "> [EXPLOITING SERVER DATA...]";
+        target.innerText = "PENETRATING ID...";
+        logBox.innerText = "> [EXTRACTING ID DATA...]";
 
         setTimeout(() => {
             mon.classList.remove('scanning');
             resBox.classList.add('active-res');
-            status.innerText = "BYPASSED";
-            status.style.color = "#00ff00";
+            target.innerText = "ID_MATCHED_" + Math.floor(Math.random()*9999);
 
-            // CÔNG THỨC CHUẨN: Banker 012348 + 1
+            // CÔNG THỨC CHUẨN CỦA ANH
             let mod = 0;
             if([0,1,2,3,4,8].includes(bScore)) mod += 1;
 
             let last = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
             if(last !== "T") history.push(last);
 
-            // THUẬT TOÁN GOD MODE: Kết hợp phá chuỗi và bám bệt
-            let godLogic = (pScore + bScore + mod + history.length + 77) % 2;
-            let final = (godLogic === 0) ? "B" : "P";
+            // THUẬT TOÁN GIẢ LẬP ID: Chốt cực mạnh dựa trên chuỗi ID
+            let idLogic = (pScore + bScore + mod + history.length + 9) % 2;
+            let final = (idLogic === 0) ? "B" : "P";
 
             res.innerText = final;
-            let color = final === 'P' ? "#00ffff" : "#ff00ff";
+            let color = final === 'P' ? "#00ffff" : "#bc13fe";
             res.style.color = color;
             resBox.style.setProperty('--glow-color', color);
-            logBox.innerText = "> [GOD MODE]: LỆNH ĐÃ ĐƯỢC PHÊ DUYỆT!";
+            logBox.innerText = "> [DONE]: DỮ LIỆU ID ĐÃ KHỚP.";
 
             pScore = null; bScore = null;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 800]);
-        }, 2000);
+            if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
+        }, 2200);
     }
 </script>
 </body>
