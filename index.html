@@ -3,70 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - VOICE VIP</title>
+    <title>KJC AI - FIX DISPLAY</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
             --accent: #bc13fe; 
         }
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
-        body { margin: 0; background: rgba(0,0,0,0.9); color: #fff; overflow: hidden; height: 100vh; }
+        body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
         /* LOGIN */
-        #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .login-box { width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
+        #login-screen { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .login-box { width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
         .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
-        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; }
+        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; }
 
         /* MAIN APP */
-        #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; border: 1px solid var(--accent); }
-        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 10px; }
-        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 100px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; opacity: 0.8; font-size: 12px; }
-
-        /* POPUP & TOOL */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 95%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 30px var(--accent); }
+        #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; }
+        .top-bar { height: 50px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 10px; }
         
-        /* SCORE INPUT */
-        .score-row { display: flex; justify-content: space-around; margin-bottom: 10px; }
-        .score-box { width: 70px; height: 70px; background: #111; border: 2px solid #444; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: var(--accent); cursor: pointer; }
+        /* LOBBY */
+        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; overflow-y: auto; flex: 1; }
+        .card { border-radius: 12px; height: 120px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 15px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; cursor: pointer; position: relative; }
+        .card::after { content: 'CHỌN SẢNH'; position: absolute; top: 5px; left: 5px; font-size: 8px; color: var(--accent); }
 
-        /* ROBOT ANIMATION */
-        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 120px; }
-        .robot-wrapper { position: relative; width: 85px; height: 85px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotBeat 0.7s infinite alternate; }
-        .plasma-bolt { position: absolute; left: 80px; top: 50%; width: 0; height: 12px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 20px #fff, 0 0 40px #00ffff, 0 0 60px var(--accent); }
+        /* POPUP OVERLAY - Tăng Z-Index để luôn hiện trên cùng */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; }
+        .popup { width: 95%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 20px; text-align: center; position: relative; box-shadow: 0 0 30px var(--accent); }
+        
+        /* ROBOT AREA */
+        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 130px; margin: 10px 0; }
+        .robot-wrapper { position: relative; width: 90px; height: 90px; z-index: 10; }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotBeat 0.8s infinite alternate; }
+        .plasma-bolt { position: absolute; left: 85px; top: 50%; width: 0; height: 12px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 20px #fff, 0 0 40px #00ffff, 0 0 60px var(--accent); }
         .scanning .plasma-bolt { width: 85px; opacity: 1; animation: boltExtreme 0.03s infinite; }
 
-        .res-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4rem; font-weight: 900; color: #111; z-index: 10; }
-        .active-res .glow-circle { opacity: 1; border: 5px solid var(--accent); border-top-color: #00ffff; border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.2s linear infinite; }
+        /* SCORE BOX */
+        .score-row { display: flex; justify-content: space-around; margin-bottom: 15px; }
+        .score-box { width: 75px; height: 75px; background: #111; border: 2px solid #444; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--accent); cursor: pointer; }
 
-        @keyframes robotBeat { from { transform: scale(1) translateY(0); } to { transform: scale(1.1) translateY(-10px); filter: drop-shadow(0 0 15px var(--accent)); } }
+        .res-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
+        .res-display { font-size: 4.5rem; font-weight: 900; color: #111; z-index: 10; }
+        .active-res .glow-circle { opacity: 1; border: 6px solid var(--accent); border-top-color: #00ffff; border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.2s linear infinite; }
+
+        @keyframes robotBeat { from { transform: scale(1); } to { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--accent)); } }
         @keyframes boltExtreme { 0% { clip-path: polygon(0 40%, 20% 0, 50% 100%, 80% 0, 100% 40%); } 100% { clip-path: polygon(0 60%, 30% 100%, 60% 0, 90% 100%, 100% 60%); } }
         @keyframes rotateFast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-        .num-btn { padding: 15px 0; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; }
-        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
-        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; }
+        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .num-btn { padding: 18px 0; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 10px; font-weight: bold; font-size: 1.2rem; }
+        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; max-height: 250px; overflow-y: auto; }
+        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 15px 0; font-size: 11px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color:var(--accent);">KJC VOICE AI</h2>
-            <input type="tel" id="phone" placeholder="SĐT đăng nhập">
+            <h2 style="color:var(--accent); margin-top:0;">KJC PRO AI</h2>
+            <input type="tel" id="phone" placeholder="Số điện thoại của anh">
             <button onclick="handleLogin()">XÂM NHẬP SERVER</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>VOICE: <b style="color:var(--accent)">ACTIVE</b></span>
-            <span>ID: <b id="stt-main" style="color:#00ff00">CONNECTED</b></span>
+            <span>VOICE: <b style="color:var(--accent)">ON</b></span>
+            <span>ALGO: <b style="color:#00ff00">MATH_SERVER_V2</b></span>
         </div>
         <div class="lobby">
             <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
@@ -76,14 +79,22 @@
         </div>
     </div>
 
+    <div id="pop-select-table" class="overlay">
+        <div class="popup">
+            <b style="color:var(--accent); display:block; margin-bottom:15px;">DANH SÁCH BÀN 1 - C16</b>
+            <div class="table-grid" id="table-list"></div>
+            <button onclick="closePopup('pop-select-table')" style="margin-top:15px; background:none; border:none; color:#555;">HUỶ BỎ</button>
+        </div>
+    </div>
+
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
-            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:5px; font-size:12px;">BÀN: --</div>
+            <span style="position:absolute; right:15px; top:10px; color:#fff; font-size:20px; cursor:pointer;" onclick="closePopup('pop-tool')">×</span>
+            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:15px;">BÀN: --</div>
             
             <div class="score-row">
-                <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
-                <div><div style="font-size:9px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
+                <div><div style="font-size:10px; color:#0055ff; margin-bottom:5px;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
+                <div><div style="font-size:10px; color:#cc0000; margin-bottom:5px;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
             </div>
 
             <div class="monitor-area" id="monitor">
@@ -97,18 +108,20 @@
                 </div>
             </div>
             
-            <div id="log-text" style="font-size:10px; color:#00ff00; margin-top:5px; font-weight:bold;">SẴN SÀNG QUÉT LÁ BÀI...</div>
+            <div id="log-text" style="font-size:11px; color:#00ff00; font-weight:bold; letter-spacing:1px;">READY...</div>
         </div>
     </div>
 
-    <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div class="num-grid" id="num-pad"></div></div></div>
-    <div id="pop-select-table" class="overlay"><div class="popup"><b>CHỌN BÀN 1-C16</b><div class="table-grid" id="table-list"></div></div></div>
+    <div id="pop-num" class="overlay" style="z-index:4000;">
+        <div class="popup" style="max-width:280px;">
+            <b style="display:block; margin-bottom:10px;">NHẬP ĐIỂM</b>
+            <div class="num-grid" id="num-pad"></div>
+        </div>
+    </div>
 
 <script>
-    let curSide = ''; let pScore = null; let bScore = null;
-    let ván = 1;
+    let curSide = ''; let pScore = null; let bScore = null; let ván = 1;
 
-    // HÀM PHÁT GIỌNG NÓI AI
     function speak(text) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'vi-VN';
@@ -120,11 +133,11 @@
         if(document.getElementById('phone').value.length >= 10) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-            // GIỌNG NÓI VÀO SẢNH
             speak("Đang xâm nhập vào server. Đang xâm nhập vào server.");
-        } else { alert("Nhập SĐT!"); }
+        } else { alert("Anh nhập SĐT để Robot nhận diện ván đánh!"); }
     }
 
+    // Khởi tạo bàn phím
     const np = document.getElementById('num-pad');
     for(let i=0; i<=9; i++) {
         let b = document.createElement('button'); b.innerText=i; b.className='num-btn';
@@ -132,14 +145,19 @@
             if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
             else { bScore=i; document.getElementById('b-val').innerText=i; }
             closePopup('pop-num');
-            if(pScore!==null && bScore!==null) runVoiceHack();
+            if(pScore!==null && bScore!==null) runFinalHack();
         };
         np.appendChild(b);
     }
 
+    // Khởi tạo danh sách bàn 1-C16
     const tList = document.getElementById('table-list');
-    for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
-    for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
+    function initTables() {
+        tList.innerHTML = '';
+        for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
+        for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
+    }
+
     function createTItem(n) {
         let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
         d.onclick = () => { 
@@ -147,17 +165,21 @@
             ván=1; 
             closePopup('pop-select-table'); 
             openPopup('pop-tool');
-            // GIỌNG NÓI CHỌN BÀN
             speak("Nhập điểm cho robot quét lá bài.");
         };
         tList.appendChild(d);
+    }
+
+    function openTableSelect(name) {
+        initTables();
+        openPopup('pop-select-table');
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
     function setSide(s) { curSide=s; openPopup('pop-num'); }
 
-    function runVoiceHack() {
+    function runFinalHack() {
         const mon = document.getElementById('monitor');
         const res = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
@@ -166,21 +188,20 @@
         mon.classList.add('scanning');
         resBox.classList.remove('active-res');
         res.innerText = "..";
-        log.innerText = "> BẺ KHÓA MATH: (B*3/2)+P-" + ván;
+        res.style.color = "#111";
+        log.innerText = "> CALCULATING MATH...";
 
         setTimeout(() => {
             mon.classList.remove('scanning');
             resBox.classList.add('active-res');
             
-            // THUẬT TOÁN NHÂN CHIA TRƯỚC - CỘNG TRỪ SAU
-            let step1 = (bScore * 3) / 2;
-            let step2 = step1 + pScore - ván;
-            let finalLogic = Math.abs(Math.floor(step2)) % 2;
-            let final = (finalLogic === 0) ? "B" : "P";
+            // Công thức: (B * 3 / 2) + P - Ván
+            let formula = Math.abs(Math.floor((bScore * 3 / 2) + pScore - ván)) % 2;
+            let final = (formula === 0) ? "B" : "P";
 
             res.innerText = final;
             res.style.color = final === 'P' ? "#00ffff" : "#bc13fe";
-            log.innerText = "> ĐÃ KHỚP SERVER ID: " + final;
+            log.innerText = "> SERVER MATCHED: " + final;
 
             pScore = null; bScore = null; ván++;
             document.getElementById('p-val').innerText = "0";
@@ -190,5 +211,5 @@
     }
 </script>
 </body>
-                </html>
-                    
+    </html>
+    
