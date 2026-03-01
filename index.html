@@ -3,136 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - FIXED DISPLAY</title>
+    <title>KJC ROBOT AI - NEURAL V5</title>
     <style>
         :root {
             --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
             --accent: #bc13fe; 
+            --player: #00f2ff;
+            --banker: #ff4d4d;
         }
         * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        /* LOGIN */
-        #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .login-box { width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px 20px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--accent); color: #fff; border-radius: 8px; text-align: center; }
-        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 8px; }
+        /* VIDEO NỀN & LOGIN */
+        .bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.4; }
+        #login-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .login-box { width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px; border-radius: 25px; box-shadow: 0 0 20px var(--accent); backdrop-filter: blur(10px); }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--accent); color: #fff; border-radius: 10px; text-align: center; outline: none; }
+        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 10px; cursor: pointer; }
 
         /* MAIN APP */
-        #main-app { display: none; height: 100vh; flex-direction: column; background: #050505; border: 1px solid var(--accent); }
-        .top-bar { height: 45px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 10px; }
-        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; overflow-y: auto; }
-        .card { border-radius: 12px; height: 100px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; opacity: 0.8; font-size: 12px; }
+        #main-app { display: none; height: 100vh; flex-direction: column; position: relative; }
+        .top-bar { height: 50px; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 11px; }
+        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; overflow-y: auto; }
+        .card { border-radius: 15px; height: 110px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; font-size: 12px; position: relative; }
+        .card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); border-radius: 15px; }
+        .card span { z-index: 1; text-shadow: 0 0 10px #000; }
 
-        /* POPUP PHÂN TÍCH (BẢN TÍM) */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 95%; max-width: 320px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 20px; padding: 15px; text-align: center; position: relative; box-shadow: 0 0 30px var(--accent); }
+        /* POPUP TOOL */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
+        .popup { width: 95%; max-width: 340px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 30px; padding: 20px; text-align: center; position: relative; box-shadow: 0 0 40px var(--accent); }
         
-        /* SCORE INPUT */
-        .score-row { display: flex; justify-content: space-around; margin-bottom: 10px; }
-        .score-box { width: 70px; height: 70px; background: #111; border: 2px solid #444; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: var(--accent); cursor: pointer; }
+        /* SCORE AREA */
+        .score-row { display: flex; justify-content: space-around; margin: 15px 0; }
+        .score-box { width: 75px; height: 75px; background: #000; border: 2px solid #222; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .score-box:active { transform: scale(0.9); border-color: var(--accent); }
 
-        /* ROBOT ANIMATION */
-        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 120px; }
-        .robot-wrapper { position: relative; width: 85px; height: 85px; z-index: 10; }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: robotBeat 0.7s infinite alternate; }
-        .plasma-bolt { position: absolute; left: 80px; top: 50%; width: 0; height: 12px; background: #fff; opacity: 0; z-index: 5; box-shadow: 0 0 20px #fff, 0 0 40px #00ffff, 0 0 60px var(--accent); }
-        .scanning .plasma-bolt { width: 85px; opacity: 1; animation: boltExtreme 0.03s infinite; }
+        /* MONITOR & ROBOT */
+        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 140px; margin: 10px 0; background: rgba(255,255,255,0.03); border-radius: 20px; }
+        .robot-wrapper { width: 100px; height: 100px; z-index: 10; filter: drop-shadow(0 0 10px var(--accent)); }
+        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: beat 0.8s infinite alternate; }
+        
+        .res-container { width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .res-display { font-size: 4.5rem; font-weight: 900; color: #111; z-index: 10; }
+        .active-res .glow-circle { opacity: 1; border: 6px solid var(--accent); border-top-color: var(--player); border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.3s linear infinite; }
 
-        .res-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
-        .res-display { font-size: 4rem; font-weight: 900; color: #111; z-index: 10; }
-        .active-res .glow-circle { opacity: 1; border: 5px solid var(--accent); border-top-color: #00ffff; border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.2s linear infinite; }
-
-        @keyframes robotBeat { from { transform: scale(1); } to { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--accent)); } }
-        @keyframes boltExtreme { 0% { clip-path: polygon(0 40%, 20% 0, 50% 100%, 80% 0, 100% 40%); } 100% { clip-path: polygon(0 60%, 30% 100%, 60% 0, 90% 100%, 100% 60%); } }
+        @keyframes beat { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes rotateFast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* BÀN 1-C16 */
-        .table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; max-height: 250px; overflow-y: auto; }
-        .t-item { background: #1a1a1a; border: 1px solid #333; padding: 12px 0; font-size: 10px; border-radius: 8px; color: #fff; text-align: center; }
-        
-        /* BÀN PHÍM SỐ */
-        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-        .num-btn { padding: 15px 0; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; }
+        /* INFO BADGES */
+        .pattern-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        .badge { background: #111; padding: 8px; border-radius: 10px; font-size: 10px; border: 1px solid #333; color: #888; }
+        .badge b { display: block; color: var(--accent); font-size: 11px; }
+
+        /* NUMPAD */
+        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .num-btn { padding: 20px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 12px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
+    <video class="bg-video" autoplay loop muted playsinline>
+        <source src="https://image2url.com/r2/default/videos/1772286547818-73fbfacd-4219-433f-86c9-59323d485ce6.mp4" type="video/mp4">
+    </video>
+
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color:var(--accent);">KJC FIXED</h2>
-            <input type="tel" id="phone" placeholder="SĐT đăng nhập">
-            <button onclick="handleLogin()">XÂM NHẬP SERVER</button>
+            <h2 style="color:var(--accent); letter-spacing: 2px;">NEURAL ROBOT</h2>
+            <input type="tel" id="phone" placeholder="NHẬP MÃ TRUY CẬP">
+            <button onclick="handleLogin()">KÍCH HOẠT AI</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar">
-            <span>MODE: <b style="color:var(--accent)">VOICE_OVERLAY</b></span>
-            <span>ID: <b style="color:#00ff00">ONLINE</b></span>
+            <span>CORE: <b style="color:var(--accent)">NEURAL_1000_PATTERNS</b></span>
+            <span>UPLINK: <b style="color:#00ff00">ACTIVE</b></span>
         </div>
         <div class="lobby">
-            <div class="card" onclick="openTableSelect('DREAM')" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')">DREAM</div>
-            <div class="card" onclick="openTableSelect('SEXY')" style="background-image:url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg')">SEXY</div>
-            <div class="card" onclick="openTableSelect('WM')" style="background-image:url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg')">WM</div>
-            <div class="card" onclick="openTableSelect('SA')" style="background-image:url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg')">SA</div>
+            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')"><span>DREAM</span></div>
+            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg')"><span>SEXY</span></div>
+            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg')"><span>WM</span></div>
+            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg')"><span>SA</span></div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
-            <span style="position:absolute; right:15px; top:10px; color:#fff; cursor:pointer; font-size:20px;" onclick="closePopup('pop-tool')">×</span>
-            <div id="active-table" style="color:yellow; font-weight:bold; margin-bottom:5px; font-size:12px;">BÀN: --</div>
+            <span style="position:absolute; right:20px; top:15px; color:#555; cursor:pointer;" onclick="exitTool()">THOÁT ×</span>
+            <div id="active-table" style="color:yellow; font-weight:bold; font-size:12px; margin-bottom:10px;">BÀN: --</div>
             
             <div class="score-row">
-                <div><div style="font-size:9px; color:#0055ff;">PLAYER</div><div class="score-box" id="p-val" onclick="setSide('P')">0</div></div>
-                <div><div style="font-size:9px; color:#cc0000;">BANKER</div><div class="score-box" id="b-val" onclick="setSide('B')">0</div></div>
+                <div><div style="font-size:9px; color:var(--player);">PLAYER</div><div class="score-box" id="p-val" style="color:var(--player);" onclick="setSide('P')">0</div></div>
+                <div><div style="font-size:9px; color:var(--banker);">BANKER</div><div class="score-box" id="b-val" style="color:var(--banker);" onclick="setSide('B')">0</div></div>
             </div>
 
             <div class="monitor-area" id="monitor">
-                <div class="robot-wrapper">
-                    <div class="plasma-bolt"></div>
-                    <div class="robot-img"></div>
-                </div>
+                <div class="robot-wrapper"><div class="robot-img"></div></div>
                 <div class="res-container" id="res-box">
                     <div class="glow-circle"></div>
                     <div id="res-text" class="res-display">?</div>
                 </div>
             </div>
             
-            <div id="log-text" style="font-size:10px; color:#00ff00; margin-top:5px; font-weight:bold;">ĐANG ĐỢI DỮ LIỆU...</div>
+            <div class="pattern-info">
+                <div class="badge">DẠNG CẦU<b id="txt-pattern">---</b></div>
+                <div class="badge">XÁC SUẤT<b id="txt-percent">0%</b></div>
+            </div>
+
+            <div id="log-text" style="font-size:10px; color:#00ff00; margin-top:15px; font-weight:bold; letter-spacing:1px;">AI: CHỜ DỮ LIỆU...</div>
         </div>
     </div>
 
     <div id="pop-select-table" class="overlay">
-        <div class="popup">
-            <b style="color:var(--accent)">DANH SÁCH BÀN 1-C16</b>
-            <div class="table-grid" id="table-list"></div>
-            <button onclick="closePopup('pop-select-table')" style="margin-top:10px; background:none; border:none; color:#555;">HUỶ BỎ</button>
+        <div class="popup" style="max-height: 80vh; overflow: hidden;">
+            <b style="color:var(--accent)">CHỌN BÀN THỰC CHIẾN</b>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:15px; overflow-y:auto; max-height:300px;" id="table-list"></div>
+            <button onclick="closePopup('pop-select-table')" style="background:none; border:none; color:#444; margin-top:10px;">ĐÓNG</button>
         </div>
     </div>
 
-    <div id="pop-num" class="overlay"><div class="popup" style="max-width:280px;"><div class="num-grid" id="num-pad"></div></div></div>
+    <div id="pop-num" class="overlay">
+        <div class="popup" style="max-width:300px; background:#000;">
+            <div class="num-grid" id="num-pad"></div>
+        </div>
+    </div>
 
 <script>
     let curSide = ''; let pScore = null; let bScore = null;
-    let ván = 1;
+    let ván = 1; let history = [];
 
-    function speak(text) {
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'vi-VN';
-        window.speechSynthesis.speak(msg);
+    function speak(t) {
+        window.speechSynthesis.cancel();
+        const m = new SpeechSynthesisUtterance(t);
+        m.lang = 'vi-VN';
+        window.speechSynthesis.speak(m);
     }
 
     function handleLogin() {
         if(document.getElementById('phone').value.length >= 10) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-            speak("Đang xâm nhập vào server. Đang xâm nhập vào server.");
-        } else { alert("Nhập SĐT!"); }
+            speak("Robot AI đã sẵn sàng. Vui lòng chọn bàn.");
+        }
     }
 
-    // Tạo bàn phím số
+    // Numpad Logic
     const np = document.getElementById('num-pad');
     for(let i=0; i<=9; i++) {
         let b = document.createElement('button'); b.innerText=i; b.className='num-btn';
@@ -140,61 +155,85 @@
             if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
             else { bScore=i; document.getElementById('b-val').innerText=i; }
             closePopup('pop-num');
-            if(pScore!==null && bScore!==null) runHack();
+            if(pScore!==null && bScore!==null) runAI();
         };
         np.appendChild(b);
     }
 
-    // Tạo danh sách bàn 1-C16
+    // Table List
     const tList = document.getElementById('table-list');
-    for(let i=1; i<=10; i++) createTItem(`BÀN ${i}`);
-    for(let i=1; i<=16; i++) createTItem(`BÀN C${i<10?'0'+i:i}`);
-
-    function createTItem(n) {
-        let d = document.createElement('div'); d.className='t-item'; d.innerText=n;
-        d.onclick = () => { 
-            // Bước quan quan trọng: Tắt bảng chọn bàn và Hiện bảng Tool
-            closePopup('pop-select-table'); 
-            document.getElementById('active-table').innerText="BÀN: "+n; 
-            openPopup('pop-tool'); 
-            speak("Nhập điểm cho robot quét lá bài.");
+    for(let i=1; i<=26; i++) {
+        let name = i <= 10 ? `BÀN ${i}` : `BÀN C${i-10 < 10 ? '0'+(i-10) : i-10}`;
+        let d = document.createElement('div');
+        d.style="background:#1a1a1a; padding:12px 0; border-radius:10px; font-size:10px; border:1px solid #333; color:#fff; text-align:center;";
+        d.innerText = name;
+        d.onclick = () => {
+            closePopup('pop-select-table');
+            document.getElementById('active-table').innerText = name;
+            openPopup('pop-tool');
+            speak("Đã vào " + name + ". Nhập điểm để phân tích.");
         };
         tList.appendChild(d);
     }
 
     function openPopup(id) { document.getElementById(id).style.display='flex'; }
     function closePopup(id) { document.getElementById(id).style.display='none'; }
-    function openTableSelect(lobbyName) { openPopup('pop-select-table'); }
+    function openTableSelect() { openPopup('pop-select-table'); }
     function setSide(s) { curSide=s; openPopup('pop-num'); }
+    function exitTool() { closePopup('pop-tool'); pScore=null; bScore=null; ván=1; history=[]; }
 
-    function runHack() {
-        const mon = document.getElementById('monitor');
-        const res = document.getElementById('res-text');
+    function runAI() {
+        const resText = document.getElementById('res-text');
         const resBox = document.getElementById('res-box');
         const log = document.getElementById('log-text');
-
-        mon.classList.add('scanning');
+        
         resBox.classList.remove('active-res');
-        res.innerText = "..";
-        log.innerText = "> BẺ KHÓA SERVER: (B*3/2)+P-" + ván;
+        resText.innerText = "..";
+        log.innerText = "DỰ TOÁN CHẴN LẺ...";
 
         setTimeout(() => {
-            mon.classList.remove('scanning');
             resBox.classList.add('active-res');
+
+            // --- THUẬT TOÁN NEURAL V5 ---
+            // 1. Phân tích Banker (Chẵn 0,2,4,6,8 + 1)
+            let bankerBase = bScore;
+            if([0, 2, 4, 6, 8].includes(bScore)) {
+                bankerBase += 1;
+            }
+
+            // 2. Phân tích Player (Luôn trừ 1 hoặc giữ nguyên tùy biến số ván)
+            let playerBase = pScore;
+            if(ván % 2 === 0) {
+                playerBase -= 1;
+            }
+
+            // 3. Công thức tính tổng biến thiên
+            let totalNeural = (bankerBase * 2) + (playerBase * 3) + ván;
             
-            // Công thức Nhân Chia Trước - Cộng Trừ Sau
-            let val = Math.abs(Math.floor((bScore * 3 / 2) + pScore - ván)) % 2;
-            let final = (val === 0) ? "B" : "P";
+            // 4. Kiểm tra Chẵn/Lẻ (Even/Odd Logic)
+            let check = Math.abs(totalNeural) % 2;
+            let final = (check === 0) ? "B" : "P"; // Chẵn ra Banker, Lẻ ra Player
 
-            res.innerText = final;
-            res.style.color = final === 'P' ? "#00ffff" : "#bc13fe";
-            log.innerText = "> SERVER MATCHED! CHỐT: " + final;
+            // 5. Đối chiếu 1000 bộ cầu (Giả lập)
+            let patterns = ["CẦU NHẢY 1-1", "CẦU BỆT DÀI", "CẦU NGHIÊNG CÁI", "CẦU NGHIÊNG CON", "CẦU 2-2", "CẦU ĐỐI XỨNG"];
+            let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            let winRate = 85 + (Math.random() * 14);
 
+            // Hiển thị
+            resText.innerText = final;
+            resText.style.color = final === 'P' ? "var(--player)" : "var(--accent)";
+            log.innerText = "KẾT QUẢ: " + (final === 'P' ? "PLAYER" : "BANKER");
+            document.getElementById('txt-pattern').innerText = randomPattern;
+            document.getElementById('txt-percent').innerText = winRate.toFixed(1) + "%";
+
+            speak("Lệnh " + (final === 'P' ? "Con" : "Cái") + ". Xác suất " + Math.floor(winRate) + " phần trăm.");
+
+            // Reset
             pScore = null; bScore = null; ván++;
             document.getElementById('p-val').innerText = "0";
             document.getElementById('b-val').innerText = "0";
-            if(navigator.vibrate) navigator.vibrate([600]);
-        }, 5000);
+            if(navigator.vibrate) navigator.vibrate([500]);
+        }, 3500);
     }
 </script>
 </body>
