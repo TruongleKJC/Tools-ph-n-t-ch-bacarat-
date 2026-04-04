@@ -2,240 +2,128 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KJC ROBOT AI - NEURAL V5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORACLE V31 - SOCCER STRIKER</title>
     <style>
-        :root {
-            --img-robot: url('https://i.postimg.cc/1zfRLs85/lv-0-20260225210308.png');
-            --accent: #bc13fe; 
-            --player: #00f2ff;
-            --banker: #ff4d4d;
+        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Oswald:wght@500;700&display=swap');
+        :root { --p: #00ff88; --gold: #ffd700; --bg: #020a05; --glass: rgba(10, 25, 15, 0.95); }
+        * { box-sizing: border-box; font-family: 'Anta', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #0a2010 0%, #020a05 100%); }
+
+        .app-container { height: 100vh; display: flex; flex-direction: column; padding: 15px; }
+        .glass-card { background: var(--glass); border: 1px solid rgba(0,255,136,0.1); border-radius: 20px; padding: 15px; margin-bottom: 15px; text-align: center; }
+
+        /* Sân bóng giả lập */
+        .goal-area { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            border: 2px solid rgba(255,255,255,0.05); border-radius: 25px; position: relative; margin: 10px 0;
+            background: linear-gradient(to bottom, rgba(0,255,136,0.05), transparent);
         }
-        * { box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
-        body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; }
 
-        /* VIDEO NỀN & LOGIN */
-        .bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.4; }
-        #login-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .login-box { width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--accent); padding: 30px; border-radius: 25px; box-shadow: 0 0 20px var(--accent); backdrop-filter: blur(10px); }
-        .login-box input { width: 100%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--accent); color: #fff; border-radius: 10px; text-align: center; outline: none; }
-        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 10px; cursor: pointer; }
+        .striker-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 90%; }
+        .slot { 
+            aspect-ratio: 1/1.2; border: 2px dashed #222; border-radius: 10px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.3s; position: relative;
+        }
+        .slot.active { border: 2px solid var(--p); background: rgba(0,255,136,0.1); box-shadow: 0 0 20px var(--p); }
+        .slot b { font-size: 1.5rem; font-family: 'Oswald'; }
+        .slot span { font-size: 0.7rem; color: #555; }
 
-        /* MAIN APP */
-        #main-app { display: none; height: 100vh; flex-direction: column; position: relative; }
-        .top-bar { height: 50px; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid var(--accent); font-size: 11px; }
-        .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; overflow-y: auto; }
-        .card { border-radius: 15px; height: 110px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; font-weight: bold; border: 1px solid #333; background-size: cover; background-position: center; font-size: 12px; position: relative; }
-        .card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); border-radius: 15px; }
-        .card span { z-index: 1; text-shadow: 0 0 10px #000; }
+        /* Ball Effect */
+        #ball { width: 40px; position: absolute; bottom: 20px; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); filter: drop-shadow(0 0 10px #fff); opacity: 0; }
 
-        /* POPUP TOOL */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 95%; max-width: 340px; background: #0a0a0a; border: 2px solid var(--accent); border-radius: 30px; padding: 20px; text-align: center; position: relative; box-shadow: 0 0 40px var(--accent); }
-        
-        /* SCORE AREA */
-        .score-row { display: flex; justify-content: space-around; margin: 15px 0; }
-        .score-box { width: 75px; height: 75px; background: #000; border: 2px solid #222; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .score-box:active { transform: scale(0.9); border-color: var(--accent); }
+        /* Controls */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn { padding: 15px 5px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; background: #111; color: #555; font-size: 0.8rem; }
+        .btn.pressed { background: var(--p); color: #000; box-shadow: 0 0 10px var(--p); }
 
-        /* MONITOR & ROBOT */
-        .monitor-area { display: flex; align-items: center; justify-content: center; position: relative; height: 140px; margin: 10px 0; background: rgba(255,255,255,0.03); border-radius: 20px; }
-        .robot-wrapper { width: 100px; height: 100px; z-index: 10; filter: drop-shadow(0 0 10px var(--accent)); }
-        .robot-img { width: 100%; height: 100%; background: var(--img-robot) center/contain no-repeat; animation: beat 0.8s infinite alternate; }
-        
-        .res-container { width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .res-display { font-size: 4.5rem; font-weight: 900; color: #111; z-index: 10; }
-        .active-res .glow-circle { opacity: 1; border: 6px solid var(--accent); border-top-color: var(--player); border-radius: 50%; position: absolute; inset: 0; animation: rotateFast 0.3s linear infinite; }
-
-        @keyframes beat { from { transform: scale(1); } to { transform: scale(1.1); } }
-        @keyframes rotateFast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* INFO BADGES */
-        .pattern-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .badge { background: #111; padding: 8px; border-radius: 10px; font-size: 10px; border: 1px solid #333; color: #888; }
-        .badge b { display: block; color: var(--accent); font-size: 11px; }
-
-        /* NUMPAD */
-        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .num-btn { padding: 20px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 12px; font-weight: bold; font-size: 1.2rem; }
+        .prob-val { font-size: 2.5rem; font-family: 'Oswald'; color: var(--gold); text-shadow: 0 0 15px var(--gold); }
     </style>
 </head>
 <body>
 
-    <video class="bg-video" autoplay loop muted playsinline>
-        <source src="https://image2url.com/r2/default/videos/1772286547818-73fbfacd-4219-433f-86c9-59323d485ce6.mp4" type="video/mp4">
-    </video>
-
-    <div id="login-screen">
-        <div class="login-box">
-            <h2 style="color:var(--accent); letter-spacing: 2px;">NEURAL ROBOT</h2>
-            <input type="tel" id="phone" placeholder="NHẬP MÃ TRUY CẬP">
-            <button onclick="handleLogin()">KÍCH HOẠT AI</button>
-        </div>
+<div class="app-container">
+    <div style="display:flex; justify-content: space-between; font-size: 0.7rem; color: var(--p);">
+        <span>SERVER: MG-STRIKER-01</span>
+        <span id="win-rate">ACCURACY: 98%</span>
     </div>
 
-    <div id="main-app">
-        <div class="top-bar">
-            <span>CORE: <b style="color:var(--accent)">NEURAL_1000_PATTERNS</b></span>
-            <span>UPLINK: <b style="color:#00ff00">ACTIVE</b></span>
-        </div>
-        <div class="lobby">
-            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/FswJDnC7/1771937103914.jpg')"><span>DREAM</span></div>
-            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/0jW7kkCX/1771937107854.jpg')"><span>SEXY</span></div>
-            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/t7GpVPDp/1771937162161.jpg')"><span>WM</span></div>
-            <div class="card" onclick="openTableSelect()" style="background-image:url('https://i.postimg.cc/bvgrc6gT/1771937152310.jpg')"><span>SA</span></div>
-        </div>
+    <div class="glass-card" style="margin-top: 10px;">
+        <small style="color:#555">XÁC SUẤT NỔ HŨ (JACKPOT)</small><br>
+        <div class="prob-val" id="jp-prob">0%</div>
     </div>
 
-    <div id="pop-tool" class="overlay">
-        <div class="popup">
-            <span style="position:absolute; right:20px; top:15px; color:#555; cursor:pointer;" onclick="exitTool()">THOÁT ×</span>
-            <div id="active-table" style="color:yellow; font-weight:bold; font-size:12px; margin-bottom:10px;">BÀN: --</div>
-            
-            <div class="score-row">
-                <div><div style="font-size:9px; color:var(--player);">PLAYER</div><div class="score-box" id="p-val" style="color:var(--player);" onclick="setSide('P')">0</div></div>
-                <div><div style="font-size:9px; color:var(--banker);">BANKER</div><div class="score-box" id="b-val" style="color:var(--banker);" onclick="setSide('B')">0</div></div>
-            </div>
-
-            <div class="monitor-area" id="monitor">
-                <div class="robot-wrapper"><div class="robot-img"></div></div>
-                <div class="res-container" id="res-box">
-                    <div class="glow-circle"></div>
-                    <div id="res-text" class="res-display">?</div>
-                </div>
-            </div>
-            
-            <div class="pattern-info">
-                <div class="badge">DẠNG CẦU<b id="txt-pattern">---</b></div>
-                <div class="badge">XÁC SUẤT<b id="txt-percent">0%</b></div>
-            </div>
-
-            <div id="log-text" style="font-size:10px; color:#00ff00; margin-top:15px; font-weight:bold; letter-spacing:1px;">AI: CHỜ DỮ LIỆU...</div>
+    <div class="goal-area">
+        <div class="striker-grid">
+            <div class="slot" id="slot-0"><span>TRÁI</span><b id="pct-0">0%</b></div>
+            <div class="slot" id="slot-1"><span>GIỮA</span><b id="pct-1">0%</b></div>
+            <div class="slot" id="slot-2"><span>PHẢI</span><b id="pct-2">0%</b></div>
         </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/53/53283.png" id="ball" alt="ball">
+        <p id="advice" style="font-size: 0.8rem; color: #444; margin-top: 20px; letter-spacing: 2px;">VUI LÒNG NHẬP 3 VÁN GẦN NHẤT</p>
     </div>
 
-    <div id="pop-select-table" class="overlay">
-        <div class="popup" style="max-height: 80vh; overflow: hidden;">
-            <b style="color:var(--accent)">CHỌN BÀN THỰC CHIẾN</b>
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:15px; overflow-y:auto; max-height:300px;" id="table-list"></div>
-            <button onclick="closePopup('pop-select-table')" style="background:none; border:none; color:#444; margin-top:10px;">ĐÓNG</button>
-        </div>
+    <div class="btn-group">
+        <button class="btn" onclick="pushData(0)">TRÁI</button>
+        <button class="btn" onclick="pushData(1)">GIỮA</button>
+        <button class="btn" onclick="pushData(2)">PHẢI</button>
     </div>
 
-    <div id="pop-num" class="overlay">
-        <div class="popup" style="max-width:300px; background:#000;">
-            <div class="num-grid" id="num-pad"></div>
-        </div>
+    <div style="text-align: center; margin-top: 15px; font-size: 0.6rem; color: #222;">
+        SOCCER STRIKER AI ENGINE - V31.0 PLATINUM
     </div>
+</div>
 
 <script>
-    let curSide = ''; let pScore = null; let bScore = null;
-    let ván = 1; let history = [];
+    let logs = [];
 
-    function speak(t) {
-        window.speechSynthesis.cancel();
-        const m = new SpeechSynthesisUtterance(t);
-        m.lang = 'vi-VN';
-        window.speechSynthesis.speak(m);
-    }
+    function pushData(pos) {
+        logs.push(pos);
+        if(logs.length > 5) logs.shift();
 
-    function handleLogin() {
-        if(document.getElementById('phone').value.length >= 10) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'flex';
-            speak("Robot AI đã sẵn sàng. Vui lòng chọn bàn.");
-        }
-    }
+        // Hiệu ứng nút bấm
+        const btns = document.querySelectorAll('.btn');
+        btns.forEach((b, i) => i === pos ? b.classList.add('pressed') : b.classList.remove('pressed'));
 
-    // Numpad Logic
-    const np = document.getElementById('num-pad');
-    for(let i=0; i<=9; i++) {
-        let b = document.createElement('button'); b.innerText=i; b.className='num-btn';
-        b.onclick = () => {
-            if(curSide=='P') { pScore=i; document.getElementById('p-val').innerText=i; }
-            else { bScore=i; document.getElementById('b-val').innerText=i; }
-            closePopup('pop-num');
-            if(pScore!==null && bScore!==null) runAI();
-        };
-        np.appendChild(b);
-    }
-
-    // Table List
-    const tList = document.getElementById('table-list');
-    for(let i=1; i<=26; i++) {
-        let name = i <= 10 ? `BÀN ${i}` : `BÀN C${i-10 < 10 ? '0'+(i-10) : i-10}`;
-        let d = document.createElement('div');
-        d.style="background:#1a1a1a; padding:12px 0; border-radius:10px; font-size:10px; border:1px solid #333; color:#fff; text-align:center;";
-        d.innerText = name;
-        d.onclick = () => {
-            closePopup('pop-select-table');
-            document.getElementById('active-table').innerText = name;
-            openPopup('pop-tool');
-            speak("Đã vào " + name + ". Nhập điểm để phân tích.");
-        };
-        tList.appendChild(d);
-    }
-
-    function openPopup(id) { document.getElementById(id).style.display='flex'; }
-    function closePopup(id) { document.getElementById(id).style.display='none'; }
-    function openTableSelect() { openPopup('pop-select-table'); }
-    function setSide(s) { curSide=s; openPopup('pop-num'); }
-    function exitTool() { closePopup('pop-tool'); pScore=null; bScore=null; ván=1; history=[]; }
-
-    function runAI() {
-        const resText = document.getElementById('res-text');
-        const resBox = document.getElementById('res-box');
-        const log = document.getElementById('log-text');
-        
-        resBox.classList.remove('active-res');
-        resText.innerText = "..";
-        log.innerText = "DỰ TOÁN CHẴN LẺ...";
+        // Giả lập quét dữ liệu
+        document.getElementById('advice').innerText = "SCANNING GOALKEEPER MOVEMENT...";
+        const ball = document.getElementById('ball');
+        ball.style.opacity = "1";
+        ball.style.left = "45%";
+        ball.style.bottom = "20px";
 
         setTimeout(() => {
-            resBox.classList.add('active-res');
-
-            // --- THUẬT TOÁN NEURAL V5 ---
-            // 1. Phân tích Banker (Chẵn 0,2,4,6,8 + 1)
-            let bankerBase = bScore;
-            if([0, 2, 4, 6, 8].includes(bScore)) {
-                bankerBase += 1;
-            }
-
-            // 2. Phân tích Player (Luôn trừ 1 hoặc giữ nguyên tùy biến số ván)
-            let playerBase = pScore;
-            if(ván % 2 === 0) {
-                playerBase -= 1;
-            }
-
-            // 3. Công thức tính tổng biến thiên
-            let totalNeural = (bankerBase * 2) + (playerBase * 3) + ván;
+            // Tính toán tỉ lệ ảo
+            const p1 = Math.floor(Math.random() * 40 + 10);
+            const p2 = Math.floor(Math.random() * (90 - p1));
+            const p3 = 100 - p1 - p2;
+            const probs = [p1, p2, p3];
             
-            // 4. Kiểm tra Chẵn/Lẻ (Even/Odd Logic)
-            let check = Math.abs(totalNeural) % 2;
-            let final = (check === 0) ? "B" : "P"; // Chẵn ra Banker, Lẻ ra Player
+            const maxIdx = probs.indexOf(Math.max(...probs));
+            
+            // Cập nhật giao diện
+            [0,1,2].forEach(i => {
+                const s = document.getElementById('slot-'+i);
+                document.getElementById('pct-'+i).innerText = probs[i] + "%";
+                s.classList.remove('active');
+                if(i === maxIdx) s.classList.add('active');
+            });
 
-            // 5. Đối chiếu 1000 bộ cầu (Giả lập)
-            let patterns = ["CẦU NHẢY 1-1", "CẦU BỆT DÀI", "CẦU NGHIÊNG CÁI", "CẦU NGHIÊNG CON", "CẦU 2-2", "CẦU ĐỐI XỨNG"];
-            let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-            let winRate = 85 + (Math.random() * 14);
+            // Di chuyển bóng tới vị trí dự đoán
+            ball.style.bottom = "120px";
+            if(maxIdx === 0) ball.style.left = "15%";
+            else if(maxIdx === 1) ball.style.left = "45%";
+            else ball.style.left = "75%";
 
-            // Hiển thị
-            resText.innerText = final;
-            resText.style.color = final === 'P' ? "var(--player)" : "var(--accent)";
-            log.innerText = "KẾT QUẢ: " + (final === 'P' ? "PLAYER" : "BANKER");
-            document.getElementById('txt-pattern').innerText = randomPattern;
-            document.getElementById('txt-percent').innerText = winRate.toFixed(1) + "%";
+            // Tỉ lệ nổ hũ
+            const jp = Math.floor(Math.random() * 20 + 75);
+            document.getElementById('jp-prob').innerText = jp + "%";
+            document.getElementById('advice').innerText = "VỊ TRÍ DỰ ĐOÁN: " + (maxIdx === 0 ? "TRÁI" : maxIdx === 1 ? "GIỮA" : "PHẢI");
+            document.getElementById('advice').style.color = "var(--p)";
 
-            speak("Lệnh " + (final === 'P' ? "Con" : "Cái") + ". Xác suất " + Math.floor(winRate) + " phần trăm.");
-
-            // Reset
-            pScore = null; bScore = null; ván++;
-            document.getElementById('p-val').innerText = "0";
-            document.getElementById('b-val').innerText = "0";
-            if(navigator.vibrate) navigator.vibrate([500]);
-        }, 3500);
+        }, 700);
     }
 </script>
 </body>
-    </html>
-    
+</html>
